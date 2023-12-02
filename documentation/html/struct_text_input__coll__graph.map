@@ -1,0 +1,17 @@
+<map id="TextInput" name="TextInput">
+<area shape="rect" id="Node000001" title=" " alt="" coords="92,3268,288,3593"/>
+<area shape="rect" id="Node000002" href="$struct_u_itext.html" title=" " alt="" coords="114,2317,266,3219"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,3234,193,3269,187,3269,187,3234"/>
+<area shape="rect" id="Node000003" href="$struct_u_iregion.html" title=" " alt="" coords="88,1260,292,2268"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="193,2283,193,2318,187,2318,187,2283"/>
+<area shape="rect" id="Node000004" href="$class_drawable.html" title=" " alt="" coords="119,843,261,1211"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="193,1226,193,1260,187,1260,187,1226"/>
+<area shape="rect" id="Node000005" href="$struct_rect.html" title=" " alt="" coords="5,5,161,779"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="97,793,102,818,121,881,116,882,97,819,91,794"/>
+<area shape="poly" id="edge7_Node000004_Node000005" title=" " alt="" coords="116,778,123,818,125,826,120,827,118,819,110,779"/>
+<area shape="rect" id="Node000007" href="$struct_color.html" title=" " alt="" coords="187,133,318,651"/>
+<area shape="poly" id="edge5_Node000004_Node000007" title=" " alt="" coords="244,650,229,819,228,826,222,825,223,818,238,650"/>
+<area shape="poly" id="edge6_Node000007_Node000007" title=" " alt="" coords="320,314,330,323,338,340,343,362,345,392,341,431,332,457,327,455,336,430,339,392,338,363,333,341,325,326,316,318"/>
+<area shape="rect" id="Node000008" href="$struct_vector2.html" title=" " alt="" coords="443,5,591,779"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="445,754,432,780,399,832,359,881,317,924,276,962,273,958,314,920,355,877,395,829,428,777,440,752"/>
+</map>

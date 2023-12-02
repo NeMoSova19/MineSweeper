@@ -1,0 +1,50 @@
+\doxysection{Button.\+hpp}
+\hypertarget{_button_8hpp_source}{}\label{_button_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}../StandartTypes.hpp"{}}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}UIregion.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Text.hpp"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_button}{Button}}\ :\ \textcolor{keyword}{public}\ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{struct_u_iregion}{UIregion}}\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \mbox{\hyperlink{struct_button}{Button}}(\mbox{\hyperlink{struct_button}{Button}}\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{struct_button}{\string~Button}}();}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{struct_button}{Button}}();}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{comment}{//\ Setter}}
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{struct_button}{Button}}\&\ SetNormalColor(\mbox{\hyperlink{struct_color}{Color}});}
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{struct_button}{Button}}\&\ SetHoverColor(\mbox{\hyperlink{struct_color}{Color}});}
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{struct_button}{Button}}\&\ SetTouchColor(\mbox{\hyperlink{struct_color}{Color}});}
+\DoxyCodeLine{00015\ \ \ \ \ }
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{comment}{//\ Getter}}
+\DoxyCodeLine{00017\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ GetNormalColor();}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ GetHoverColor();}
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ GetTouchColor();}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{comment}{//\ Events}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ OnEditable()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ OnMouseExit()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{void}\ OnMouseEnter()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ OnMousePress(SuperMouse::Key\ key)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ OnMouseRelease(SuperMouse::Key\ key)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//\ Drawing}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{void}\ Draw(sf::RenderWindow\&\ rw)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ Update()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{comment}{//\ Json}}
+\DoxyCodeLine{00033\ \ \ \ \ json\ GetJson()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{void}\ SetJson(json\ js)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{void}\ PostSetJson(json\ js)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{struct_u_itext}{UItext}}*\ text;}
+\DoxyCodeLine{00039\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00040\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ HoverColor\{230,230,230\};}
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ TouchColor\{255,255,255\};}
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{struct_color}{Color}}\ NormalColor\{255,255,255\};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ std::string\ GetType()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}UIButton"{}};\ \}}
+\DoxyCodeLine{00045\ \};}
+
+\end{DoxyCode}

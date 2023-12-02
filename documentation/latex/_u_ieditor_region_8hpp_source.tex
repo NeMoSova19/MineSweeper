@@ -1,0 +1,27 @@
+\doxysection{UIeditor\+Region.\+hpp}
+\hypertarget{_u_ieditor_region_8hpp_source}{}\label{_u_ieditor_region_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}UIregion.hpp"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_u_ieditor_region_rect}{UIeditorRegionRect}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{struct_u_iregion}{UIregion}}\ \{}
+\DoxyCodeLine{00005\ \ \ \ \ \mbox{\hyperlink{struct_u_ieditor_region_rect}{UIeditorRegionRect}}();}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{keywordtype}{void}\ Set(\mbox{\hyperlink{struct_u_iregion}{UIregion}}*\ r);}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keywordtype}{void}\ Update()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keywordtype}{void}\ Draw(sf::RenderWindow\&\ rw)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \ \ \ \ std::string\ GetType()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}UIeditorRegionRect"{}};\ \}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ \mbox{\hyperlink{struct_u_iregion}{UIregion}}*\ m\_region\{\ \textcolor{keyword}{nullptr}\ \};}
+\DoxyCodeLine{00013\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ UpdatePosition();}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{void}\ LU\_grab();}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{void}\ LD\_grab();}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{void}\ RU\_grab();}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{void}\ RD\_grab();}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{void}\ Center\_grab();}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{struct_u_iregion}{UIregion}}\ points[5];}
+\DoxyCodeLine{00022\ \};}
+
+\end{DoxyCode}

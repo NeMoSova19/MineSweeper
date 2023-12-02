@@ -1,0 +1,21 @@
+#include "{{name}}.h"
+
+void {{name}}::Start()
+{
+	Component::Start();
+}
+
+void {{name}}::Tick(float deltaTime)
+{
+	Component::Tick(deltaTime);
+}
+
+void {{name}}::FixedUpdate(float deltaTime)
+{
+	Component::FixedUpdate(deltaTime);
+}
+   
+void {{name}}::End()  
+{
+	Component::End();
+}   

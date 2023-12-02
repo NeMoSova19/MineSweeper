@@ -1,0 +1,465 @@
+\doxysection{Структура Button}
+\hypertarget{struct_button}{}\label{struct_button}\index{Button@{Button}}
+
+
+Граф наследования\+:Button\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{struct_button__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Граф связей класса Button\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{struct_button__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_button_a2e17780a9bf14813692d32627f988ec2}\label{struct_button_a2e17780a9bf14813692d32627f988ec2} 
+{\bfseries Button} (\mbox{\hyperlink{struct_button}{Button}} \&\&)=delete
+\item 
+\Hypertarget{struct_button_ae7a7b316612c680e2aa1802ba843b71a}\label{struct_button_ae7a7b316612c680e2aa1802ba843b71a} 
+\mbox{\hyperlink{struct_button}{Button}} \& {\bfseries Set\+Normal\+Color} (\mbox{\hyperlink{struct_color}{Color}})
+\item 
+\Hypertarget{struct_button_a07e76fe5bf667c9ffe442024293c0ada}\label{struct_button_a07e76fe5bf667c9ffe442024293c0ada} 
+\mbox{\hyperlink{struct_button}{Button}} \& {\bfseries Set\+Hover\+Color} (\mbox{\hyperlink{struct_color}{Color}})
+\item 
+\Hypertarget{struct_button_a37a99571c4734965b869a310f8a61061}\label{struct_button_a37a99571c4734965b869a310f8a61061} 
+\mbox{\hyperlink{struct_button}{Button}} \& {\bfseries Set\+Touch\+Color} (\mbox{\hyperlink{struct_color}{Color}})
+\item 
+\Hypertarget{struct_button_a92eb37e3e78a2ea85a5f223bfe26dbc0}\label{struct_button_a92eb37e3e78a2ea85a5f223bfe26dbc0} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Get\+Normal\+Color} ()
+\item 
+\Hypertarget{struct_button_aa34658c2629a4f2641c034b8a92373e2}\label{struct_button_aa34658c2629a4f2641c034b8a92373e2} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Get\+Hover\+Color} ()
+\item 
+\Hypertarget{struct_button_adc78bc346d448ffd2e53f80e13997a63}\label{struct_button_adc78bc346d448ffd2e53f80e13997a63} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Get\+Touch\+Color} ()
+\item 
+void \mbox{\hyperlink{struct_button_a3d711a5a4cfece69f7e69a452c8a7bc0}{On\+Editable}} () override
+\item 
+void \mbox{\hyperlink{struct_button_a3efb5b9018ef5ce0d4ab471f915f1cfb}{On\+Mouse\+Exit}} () override
+\item 
+void \mbox{\hyperlink{struct_button_a55178ecfbfda88ff0e8b59e7c602a45f}{On\+Mouse\+Enter}} () override
+\item 
+void \mbox{\hyperlink{struct_button_abbe16736927937dd396cb1a7b27f67a9}{On\+Mouse\+Press}} (Super\+Mouse\+::\+Key key) override
+\item 
+void \mbox{\hyperlink{struct_button_adcf42a281d1e5a2b8fdbfa31cefc23cf}{On\+Mouse\+Release}} (Super\+Mouse\+::\+Key key) override
+\item 
+void \mbox{\hyperlink{struct_button_ad49fe42d5a46bfb8c7c40fcd9f8b1e4c}{Draw}} (sf\+::\+Render\+Window \&rw) override
+\item 
+void \mbox{\hyperlink{struct_button_a25bb759f840f630f901d349b9efbcd28}{Update}} () override
+\item 
+json \mbox{\hyperlink{struct_button_a515f6d17521c868ef5f66ed02fca7dff}{Get\+Json}} () override
+\item 
+void \mbox{\hyperlink{struct_button_a6713df8119c526a2a38529aac135b920}{Set\+Json}} (json js) override
+\item 
+void \mbox{\hyperlink{struct_button_a530280c2f71af874b15758ec02b172de}{Post\+Set\+Json}} (json js) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries UIregion} (\mbox{\hyperlink{struct_u_iregion}{UIregion}} \&\&)=delete
+\item 
+bool {\bfseries Get\+Active} () const
+\item 
+std\+::string {\bfseries Get\+Name} () const
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Clicable} (bool b)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Name} (std\+::string name)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Active} (bool active)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Left\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Right\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Up\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Down\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Reset\+Bind} (uint8\+\_\+t p)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Grab} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Press} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Release} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Hold} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Enter} (std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Exit} (std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Editable} (std\+::function$<$ void()$>$ f)
+\item 
+bool {\bfseries Click\+Update} (bool dont\+\_\+handle\+\_\+clicks=false)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{class_drawable}{Drawable}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Texture} (std\+::string const \&texture\+\_\+path)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+BGColor} (\mbox{\hyperlink{struct_color}{Color}} const \&col)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Texture\+Rect} (\mbox{\hyperlink{struct_rect}{Rect}} const \&r)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Size} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Number} (size\+\_\+t n)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Next} ()
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Draw\+Type} (Sprite\+Draw\+Type sdt)
+\item 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Get\+BGColor} () const
+\item 
+std\+::string {\bfseries Get\+BGTexture\+Path} () const
+\item 
+sf\+::\+Texture \& {\bfseries Get\+BGTexture} () const
+\item 
+void \mbox{\hyperlink{class_drawable_a17e33cccfdfd998c452369852455534d}{On\+Editable}} () override
+\item 
+void {\bfseries Draw\+Update} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Rect} (float x, float y, float w, float h)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Rect\+Type} (Rect\+Type rt)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Center} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&center)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Size\+Across\+Pos} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Size\+Across\+Center} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Radius} (float r)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Width} (float width)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Height} (float height)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Up} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Up} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Down} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Down} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Up\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Down\+Border} (float delta)
+\item 
+float {\bfseries Get\+Up} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Size} () const
+\item 
+float {\bfseries Get\+Left} () const
+\item 
+float {\bfseries Get\+Down} () const
+\item 
+float {\bfseries Get\+Right} () const
+\item 
+float {\bfseries Get\+Width} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Center} () const
+\item 
+float {\bfseries Get\+Radius} () const
+\item 
+float {\bfseries Get\+Heigth} () const
+\item 
+virtual bool {\bfseries Contains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+bool {\bfseries AABBContains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+bool {\bfseries AABBIntersect} (\mbox{\hyperlink{struct_u_iregion}{UIregion}} const \&aabb)
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries AABBrelatively\+Line} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&start, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&dir)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{class_point}{Point}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Point} (\mbox{\hyperlink{class_point}{Point}} \&\&)=delete
+\item 
+{\bfseries Point} (float x, float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Parent} (\mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*}ptr)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Local\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Global\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p, Type t)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+LocalX} (float x)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+LocalY} (float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+GlobalX} (float x)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+GlobalY} (float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Parent} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*} $>$ \& {\bfseries Get\+Childrens} ()
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Local\+Position} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Global\+Position} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Position} (Type t) const
+\item 
+void {\bfseries Un\+Parent} ()
+\item 
+void {\bfseries Move} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&d)
+\item 
+void {\bfseries MoveX} (float x)
+\item 
+void {\bfseries MoveY} (float y)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_button_a13761257c84d996656c4c1b71671255e}\label{struct_button_a13761257c84d996656c4c1b71671255e} 
+\mbox{\hyperlink{struct_u_itext}{UItext}} \texorpdfstring{$\ast$}{*} {\bfseries text}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые атрибуты унаследованные от \mbox{\hyperlink{class_drawable}{Drawable}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries m\+\_\+\+BGcolor} \{255,255,255\}
+\item 
+std\+::string {\bfseries m\+\_\+\+BGtexture\+Path}
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} {\bfseries m\+\_\+\+Texture\+Rect}
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries m\+\_\+\+Sprite\+Size}
+\item 
+size\+\_\+t {\bfseries m\+\_\+\+Sprite\+Num} \{ 0 \}
+\item 
+Sprite\+Draw\+Type {\bfseries m\+\_\+\+Sprite\+Draw\+Type} \{ Sprite\+Draw\+Type\+::\+Texture\+Rect \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Защищенные члены}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{struct_button_afdb23569a2ad74819c6899fc14663587}{Get\+Type}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные члены унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual void {\bfseries On\+Mouse\+Hold} (Super\+Mouse\+::\+Key)
+\item 
+virtual void {\bfseries On\+Mouse\+Grab} (Super\+Mouse\+::\+Key)
+\item 
+virtual void {\bfseries On\+Mouse\+Press\+Out} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Защищенные данные}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_button_a1f51e249f7ca833477cf8ad559a14dc5}\label{struct_button_a1f51e249f7ca833477cf8ad559a14dc5} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Hover\+Color} \{230,230,230\}
+\item 
+\Hypertarget{struct_button_a186d9e6a9a493940ad1ccdde5231b40e}\label{struct_button_a186d9e6a9a493940ad1ccdde5231b40e} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Touch\+Color} \{255,255,255\}
+\item 
+\Hypertarget{struct_button_a0f9150fa3fceae42b3875d5fd0f015a4}\label{struct_button_a0f9150fa3fceae42b3875d5fd0f015a4} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Normal\+Color} \{255,255,255\}
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные данные унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+is\+Clicable} \{ false \}
+\item 
+bool {\bfseries is\+Grab} \mbox{[}Super\+Mouse\+::\+Num\+Keys\mbox{]}
+\item 
+bool {\bfseries is\+Available} \{ false \}
+\item 
+bool {\bfseries in\+Rect\+Now} \{ false \}
+\item 
+bool {\bfseries in\+Rect\+Prev} \{ false \}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Grab}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Press}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Release}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Hold}
+\item 
+std\+::vector$<$ std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Enter}
+\item 
+std\+::vector$<$ std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Exit}
+\item 
+std\+::vector$<$ std\+::function$<$ void()$>$ $>$ {\bfseries FOn\+Editable}
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные данные унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+Rect\+Type {\bfseries m\+\_\+\+Rect\+Type} \{ Rect\+Type\+::\+Rect \}
+\item 
+Edit\+State {\bfseries m\+\_\+edit\+State} \{ Edit\+State\+::\+Null \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Дополнительные унаследованные члены}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_rect_a88573f7dff291ce4e3704a2696789c32}\label{struct_rect_a88573f7dff291ce4e3704a2696789c32} 
+enum class {\bfseries Edit\+State} \+: uint8\+\_\+t \{ {\bfseries Null} = 0b0
+, {\bfseries Resize} = 0b1
+, {\bfseries Move} = 0b10
+, {\bfseries Edit} = Resize \texorpdfstring{$\vert$}{|} Move
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{class_point}{Point}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_point_a749e48522266b7ddae24082d28a98ddb}\label{class_point_a749e48522266b7ddae24082d28a98ddb} 
+enum {\bfseries Type} \+: uint8\+\_\+t \{ {\bfseries Local}
+, {\bfseries Global}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые статические члены унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class T  = UIregion$>$ }\\static T \texorpdfstring{$\ast$}{*} {\bfseries Find\+By\+Name} (std\+::string name)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые статические члены унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+static bool {\bfseries AABBContains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&lu, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&size, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Методы}
+\Hypertarget{struct_button_ad49fe42d5a46bfb8c7c40fcd9f8b1e4c}\label{struct_button_ad49fe42d5a46bfb8c7c40fcd9f8b1e4c} 
+\index{Button@{Button}!Draw@{Draw}}
+\index{Draw@{Draw}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{Draw()}{Draw()}}
+{\footnotesize\ttfamily void Button\+::\+Draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{rw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{class_drawable}{Drawable}}.
+
+\Hypertarget{struct_button_a515f6d17521c868ef5f66ed02fca7dff}\label{struct_button_a515f6d17521c868ef5f66ed02fca7dff} 
+\index{Button@{Button}!GetJson@{GetJson}}
+\index{GetJson@{GetJson}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{GetJson()}{GetJson()}}
+{\footnotesize\ttfamily json Button\+::\+Get\+Json (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_afdb23569a2ad74819c6899fc14663587}\label{struct_button_afdb23569a2ad74819c6899fc14663587} 
+\index{Button@{Button}!GetType@{GetType}}
+\index{GetType@{GetType}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{GetType()}{GetType()}}
+{\footnotesize\ttfamily std\+::string Button\+::\+Get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_a3d711a5a4cfece69f7e69a452c8a7bc0}\label{struct_button_a3d711a5a4cfece69f7e69a452c8a7bc0} 
+\index{Button@{Button}!OnEditable@{OnEditable}}
+\index{OnEditable@{OnEditable}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{OnEditable()}{OnEditable()}}
+{\footnotesize\ttfamily void Button\+::\+On\+Editable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_rect}{Rect}}.
+
+\Hypertarget{struct_button_a55178ecfbfda88ff0e8b59e7c602a45f}\label{struct_button_a55178ecfbfda88ff0e8b59e7c602a45f} 
+\index{Button@{Button}!OnMouseEnter@{OnMouseEnter}}
+\index{OnMouseEnter@{OnMouseEnter}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{OnMouseEnter()}{OnMouseEnter()}}
+{\footnotesize\ttfamily void Button\+::\+On\+Mouse\+Enter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_a3efb5b9018ef5ce0d4ab471f915f1cfb}\label{struct_button_a3efb5b9018ef5ce0d4ab471f915f1cfb} 
+\index{Button@{Button}!OnMouseExit@{OnMouseExit}}
+\index{OnMouseExit@{OnMouseExit}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{OnMouseExit()}{OnMouseExit()}}
+{\footnotesize\ttfamily void Button\+::\+On\+Mouse\+Exit (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_abbe16736927937dd396cb1a7b27f67a9}\label{struct_button_abbe16736927937dd396cb1a7b27f67a9} 
+\index{Button@{Button}!OnMousePress@{OnMousePress}}
+\index{OnMousePress@{OnMousePress}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{OnMousePress()}{OnMousePress()}}
+{\footnotesize\ttfamily void Button\+::\+On\+Mouse\+Press (\begin{DoxyParamCaption}\item[{Super\+Mouse\+::\+Key}]{key }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_adcf42a281d1e5a2b8fdbfa31cefc23cf}\label{struct_button_adcf42a281d1e5a2b8fdbfa31cefc23cf} 
+\index{Button@{Button}!OnMouseRelease@{OnMouseRelease}}
+\index{OnMouseRelease@{OnMouseRelease}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{OnMouseRelease()}{OnMouseRelease()}}
+{\footnotesize\ttfamily void Button\+::\+On\+Mouse\+Release (\begin{DoxyParamCaption}\item[{Super\+Mouse\+::\+Key}]{key }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_a530280c2f71af874b15758ec02b172de}\label{struct_button_a530280c2f71af874b15758ec02b172de} 
+\index{Button@{Button}!PostSetJson@{PostSetJson}}
+\index{PostSetJson@{PostSetJson}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{PostSetJson()}{PostSetJson()}}
+{\footnotesize\ttfamily void Button\+::\+Post\+Set\+Json (\begin{DoxyParamCaption}\item[{json}]{js }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_a6713df8119c526a2a38529aac135b920}\label{struct_button_a6713df8119c526a2a38529aac135b920} 
+\index{Button@{Button}!SetJson@{SetJson}}
+\index{SetJson@{SetJson}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{SetJson()}{SetJson()}}
+{\footnotesize\ttfamily void Button\+::\+Set\+Json (\begin{DoxyParamCaption}\item[{json}]{js }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion}{UIregion}}.
+
+\Hypertarget{struct_button_a25bb759f840f630f901d349b9efbcd28}\label{struct_button_a25bb759f840f630f901d349b9efbcd28} 
+\index{Button@{Button}!Update@{Update}}
+\index{Update@{Update}!Button@{Button}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily void Button\+::\+Update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_u_iregion_ad1639ab93874b5015283d2a5c57d6be5}{UIregion}}.
+
+
+
+Объявления и описания членов структур находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+Button.\+hpp\item 
+Button.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,24 @@
+<map id="Toggle" name="Toggle">
+<area shape="rect" id="Node000001" title=" " alt="" coords="507,3836,679,4247"/>
+<area shape="rect" id="Node000002" href="$struct_button.html" title=" " alt="" coords="384,3297,519,3772"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="524,3786,538,3835,533,3837,519,3787"/>
+<area shape="rect" id="Node000003" href="$struct_u_iregion.html" title=" " alt="" coords="211,1260,415,2268"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="398,2283,403,2332,424,2590,438,2849,452,3297,447,3298,433,2849,419,2590,398,2332,393,2283"/>
+<area shape="rect" id="Node000009" href="$struct_u_itext.html" title=" " alt="" coords="237,2332,389,3233"/>
+<area shape="poly" id="edge10_Node000009_Node000003" title=" " alt="" coords="315,2283,315,2332,310,2332,310,2283"/>
+<area shape="rect" id="Node000004" href="$class_drawable.html" title=" " alt="" coords="187,843,329,1211"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="275,1225,278,1260,273,1260,270,1226"/>
+<area shape="rect" id="Node000005" href="$struct_rect.html" title=" " alt="" coords="5,5,161,779"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="96,792,104,818,121,855,141,890,189,952,185,956,137,893,116,857,100,820,91,794"/>
+<area shape="poly" id="edge7_Node000004_Node000005" title=" " alt="" coords="144,778,157,818,182,883,177,885,151,820,139,779"/>
+<area shape="rect" id="Node000007" href="$struct_color.html" title=" " alt="" coords="411,133,542,651"/>
+<area shape="poly" id="edge12_Node000001_Node000007" title=" " alt="" coords="545,633,564,726,580,824,591,925,595,1025,595,3536,595,3820,590,3820,590,3536,590,1025,586,926,575,825,558,726,539,634"/>
+<area shape="poly" id="edge11_Node000002_Node000007" title=" " alt="" coords="479,650,479,1025,479,2784,475,3040,467,3281,461,3280,470,3040,474,2784,474,1025,474,650"/>
+<area shape="poly" id="edge5_Node000004_Node000007" title=" " alt="" coords="414,633,353,820,338,856,333,854,347,818,409,632"/>
+<area shape="poly" id="edge6_Node000007_Node000007" title=" " alt="" coords="544,314,554,323,562,340,567,362,569,392,565,431,556,457,551,455,560,430,563,392,562,363,557,341,549,326,540,318"/>
+<area shape="rect" id="Node000008" href="$struct_vector2.html" title=" " alt="" coords="185,5,333,779"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="261,778,261,826,256,826,256,778"/>
+<area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="368,3233,376,3273,383,3302,377,3303,371,3274,363,3234"/>
+<area shape="rect" id="Node000010" href="$class_toggle_group.html" title=" " alt="" coords="631,3489,763,3580"/>
+<area shape="poly" id="edge13_Node000001_Node000010" title=" " alt="" coords="690,3580,641,3820,636,3819,685,3579"/>
+</map>

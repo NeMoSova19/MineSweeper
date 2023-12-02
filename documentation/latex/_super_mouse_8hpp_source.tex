@@ -1,0 +1,46 @@
+\doxysection{Super\+Mouse.\+hpp}
+\hypertarget{_super_mouse_8hpp_source}{}\label{_super_mouse_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}StandartTypes.hpp"{}}}
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00006\ \textcolor{comment}{Полная\ обработанная информация\ о мыши}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\(\backslash\)param\ win\_pose\ позиция\ относительно окна}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\(\backslash\)param\ pose\ \ \ \ \ позиция\ мыши}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\(\backslash\)param\ dir\ \ \ \ \ \ смещение за кадр}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\(\backslash\)param\ mButtonNow\ \ \ \ \ \ \ состояние нажатия\ кнопок\ (bool)}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\(\backslash\)param\ mButtonState\ \ \ \ \ 1\ из 4\ состояний в ButtonState}}
+\DoxyCodeLine{00012\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_super_mouse}{SuperMouse}}\ \{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ initialize(sf::RenderWindow*\ \_wwer);}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ update();}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{enum}\ ButtonState\{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ Not\_press,}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ Press,}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ Release,}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ Hold}
+\DoxyCodeLine{00024\ \ \ \ \ \};}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{enum}\ Key\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ Left,\ Right,\ Middle,\ Side1,\ Side2}
+\DoxyCodeLine{00028\ \ \ \ \ \};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ int8\_t\ NumKeys\{\ 5\ \};}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \mbox{\hyperlink{struct_vector2}{Vector2}}\ win\_pose,\ pose,\ map\_pose,\ dir;}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ ButtonState\ mButtonState[NumKeys];}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \mbox{\hyperlink{struct_vector2}{Vector2}}\ prev\_pose;}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ sf::RenderWindow*\ wwer\{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ mButtonNow[NumKeys];}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ mButtonPrev[NumKeys];}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \};}
+
+\end{DoxyCode}

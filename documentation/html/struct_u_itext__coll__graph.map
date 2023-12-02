@@ -1,0 +1,17 @@
+<map id="UItext" name="UItext">
+<area shape="rect" id="Node000001" title=" " alt="" coords="114,2863,266,3764"/>
+<area shape="rect" id="Node000002" href="$struct_u_iregion.html" title=" " alt="" coords="88,1805,292,2813"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,2828,193,2863,187,2863,187,2828"/>
+<area shape="rect" id="Node000003" href="$class_drawable.html" title=" " alt="" coords="119,1388,261,1756"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="193,1771,193,1805,187,1805,187,1771"/>
+<area shape="rect" id="Node000004" href="$struct_rect.html" title=" " alt="" coords="5,551,161,1324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="97,1338,102,1363,121,1426,116,1428,97,1365,91,1339"/>
+<area shape="poly" id="edge7_Node000003_Node000004" title=" " alt="" coords="116,1323,123,1363,125,1371,120,1372,118,1365,110,1324"/>
+<area shape="rect" id="Node000005" href="$class_point.html" title=" " alt="" coords="15,5,151,501"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="86,516,86,551,81,551,81,516"/>
+<area shape="rect" id="Node000006" href="$struct_color.html" title=" " alt="" coords="187,679,318,1196"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="244,1196,229,1364,228,1371,222,1371,223,1364,238,1195"/>
+<area shape="poly" id="edge6_Node000006_Node000006" title=" " alt="" coords="319,861,330,870,338,886,343,908,345,937,341,975,332,1001,327,999,336,974,339,937,338,909,333,888,325,873,316,864"/>
+<area shape="rect" id="Node000007" href="$struct_vector2.html" title=" " alt="" coords="443,551,591,1324"/>
+<area shape="poly" id="edge8_Node000003_Node000007" title=" " alt="" coords="445,1300,432,1325,399,1377,359,1426,317,1470,276,1507,273,1503,314,1466,355,1422,395,1374,428,1323,440,1297"/>
+</map>

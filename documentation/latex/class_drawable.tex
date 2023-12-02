@@ -1,0 +1,236 @@
+\doxysection{Класс Drawable}
+\hypertarget{class_drawable}{}\label{class_drawable}\index{Drawable@{Drawable}}
+
+
+Граф наследования\+:Drawable\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_drawable__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Граф связей класса Drawable\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_drawable__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_drawable_a92a531202bdca90deda0da0f8136a8ad}\label{class_drawable_a92a531202bdca90deda0da0f8136a8ad} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Texture} (std\+::string const \&texture\+\_\+path)
+\item 
+\Hypertarget{class_drawable_adeac083d16c7071f752dd09d3af98604}\label{class_drawable_adeac083d16c7071f752dd09d3af98604} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+BGColor} (\mbox{\hyperlink{struct_color}{Color}} const \&col)
+\item 
+\Hypertarget{class_drawable_a69c47162181ccb305a839edbff9da1d5}\label{class_drawable_a69c47162181ccb305a839edbff9da1d5} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Texture\+Rect} (\mbox{\hyperlink{struct_rect}{Rect}} const \&r)
+\item 
+\Hypertarget{class_drawable_affc9354adc0adc9cab5a24b3319ac1ba}\label{class_drawable_affc9354adc0adc9cab5a24b3319ac1ba} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Size} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\Hypertarget{class_drawable_ae143eebf8a6bdda388af669e328b624b}\label{class_drawable_ae143eebf8a6bdda388af669e328b624b} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Number} (size\+\_\+t n)
+\item 
+\Hypertarget{class_drawable_a126f49d3e16b96deae4f8bf2f5386aaf}\label{class_drawable_a126f49d3e16b96deae4f8bf2f5386aaf} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Next} ()
+\item 
+\Hypertarget{class_drawable_a47e2e81da51195d8e9683939a1fad147}\label{class_drawable_a47e2e81da51195d8e9683939a1fad147} 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Draw\+Type} (Sprite\+Draw\+Type sdt)
+\item 
+\Hypertarget{class_drawable_aff85844319ec4273ff53e8ec8288a1c3}\label{class_drawable_aff85844319ec4273ff53e8ec8288a1c3} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Get\+BGColor} () const
+\item 
+\Hypertarget{class_drawable_ab06e3c6169dd25de31415f8e32a821f5}\label{class_drawable_ab06e3c6169dd25de31415f8e32a821f5} 
+std\+::string {\bfseries Get\+BGTexture\+Path} () const
+\item 
+\Hypertarget{class_drawable_a03d9daece773d25756e00d25216e6d8b}\label{class_drawable_a03d9daece773d25756e00d25216e6d8b} 
+sf\+::\+Texture \& {\bfseries Get\+BGTexture} () const
+\item 
+\Hypertarget{class_drawable_a3d90ac782951ca20f203fe10ae126a36}\label{class_drawable_a3d90ac782951ca20f203fe10ae126a36} 
+virtual void {\bfseries Draw} (sf\+::\+Render\+Window \&rw)
+\item 
+void \mbox{\hyperlink{class_drawable_a17e33cccfdfd998c452369852455534d}{On\+Editable}} () override
+\item 
+\Hypertarget{class_drawable_aa7e5a25bf854593f57f97444e6de165b}\label{class_drawable_aa7e5a25bf854593f57f97444e6de165b} 
+void {\bfseries Draw\+Update} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Rect} (float x, float y, float w, float h)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Rect\+Type} (Rect\+Type rt)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Center} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&center)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Size\+Across\+Pos} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Size\+Across\+Center} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Radius} (float r)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Width} (float width)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Height} (float height)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Up} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Up} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Down} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Down} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Up\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Down\+Border} (float delta)
+\item 
+float {\bfseries Get\+Up} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Size} () const
+\item 
+float {\bfseries Get\+Left} () const
+\item 
+float {\bfseries Get\+Down} () const
+\item 
+float {\bfseries Get\+Right} () const
+\item 
+float {\bfseries Get\+Width} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Center} () const
+\item 
+float {\bfseries Get\+Radius} () const
+\item 
+float {\bfseries Get\+Heigth} () const
+\item 
+virtual bool {\bfseries Contains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+bool {\bfseries AABBContains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+bool {\bfseries AABBIntersect} (\mbox{\hyperlink{struct_u_iregion}{UIregion}} const \&aabb)
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries AABBrelatively\+Line} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&start, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&dir)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{class_point}{Point}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Point} (\mbox{\hyperlink{class_point}{Point}} \&\&)=delete
+\item 
+{\bfseries Point} (float x, float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Parent} (\mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*}ptr)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Local\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Global\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p, Type t)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+LocalX} (float x)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+LocalY} (float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+GlobalX} (float x)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+GlobalY} (float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Parent} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*} $>$ \& {\bfseries Get\+Childrens} ()
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Local\+Position} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Global\+Position} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Position} (Type t) const
+\item 
+void {\bfseries Un\+Parent} ()
+\item 
+void {\bfseries Move} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&d)
+\item 
+void {\bfseries MoveX} (float x)
+\item 
+void {\bfseries MoveY} (float y)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Открытые атрибуты}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_drawable_a007b20f2d65b71a6e8fba38a082c0db8}\label{class_drawable_a007b20f2d65b71a6e8fba38a082c0db8} 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries m\+\_\+\+BGcolor} \{255,255,255\}
+\item 
+\Hypertarget{class_drawable_a9f646bc7b124f7492418dbbc0762424b}\label{class_drawable_a9f646bc7b124f7492418dbbc0762424b} 
+std\+::string {\bfseries m\+\_\+\+BGtexture\+Path}
+\item 
+\Hypertarget{class_drawable_af1af1bed0382d1b08b24756084a15cd3}\label{class_drawable_af1af1bed0382d1b08b24756084a15cd3} 
+\mbox{\hyperlink{struct_rect}{Rect}} {\bfseries m\+\_\+\+Texture\+Rect}
+\item 
+\Hypertarget{class_drawable_ae247c5dde5487788a952b0956ccb426d}\label{class_drawable_ae247c5dde5487788a952b0956ccb426d} 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries m\+\_\+\+Sprite\+Size}
+\item 
+\Hypertarget{class_drawable_acd2d5d23b29b868609d0b3343b58e36a}\label{class_drawable_acd2d5d23b29b868609d0b3343b58e36a} 
+size\+\_\+t {\bfseries m\+\_\+\+Sprite\+Num} \{ 0 \}
+\item 
+\Hypertarget{class_drawable_a87b1313c299878f27777482db09026b5}\label{class_drawable_a87b1313c299878f27777482db09026b5} 
+Sprite\+Draw\+Type {\bfseries m\+\_\+\+Sprite\+Draw\+Type} \{ Sprite\+Draw\+Type\+::\+Texture\+Rect \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Дополнительные унаследованные члены}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_rect_a88573f7dff291ce4e3704a2696789c32}\label{struct_rect_a88573f7dff291ce4e3704a2696789c32} 
+enum class {\bfseries Edit\+State} \+: uint8\+\_\+t \{ {\bfseries Null} = 0b0
+, {\bfseries Resize} = 0b1
+, {\bfseries Move} = 0b10
+, {\bfseries Edit} = Resize \texorpdfstring{$\vert$}{|} Move
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{class_point}{Point}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_point_a749e48522266b7ddae24082d28a98ddb}\label{class_point_a749e48522266b7ddae24082d28a98ddb} 
+enum {\bfseries Type} \+: uint8\+\_\+t \{ {\bfseries Local}
+, {\bfseries Global}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые статические члены унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+static bool {\bfseries AABBContains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&lu, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&size, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные данные унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+Rect\+Type {\bfseries m\+\_\+\+Rect\+Type} \{ Rect\+Type\+::\+Rect \}
+\item 
+Edit\+State {\bfseries m\+\_\+edit\+State} \{ Edit\+State\+::\+Null \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Методы}
+\Hypertarget{class_drawable_a17e33cccfdfd998c452369852455534d}\label{class_drawable_a17e33cccfdfd998c452369852455534d} 
+\index{Drawable@{Drawable}!OnEditable@{OnEditable}}
+\index{OnEditable@{OnEditable}!Drawable@{Drawable}}
+\doxysubsubsection{\texorpdfstring{OnEditable()}{OnEditable()}}
+{\footnotesize\ttfamily void Drawable\+::\+On\+Editable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{struct_rect}{Rect}}.
+
+
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+UIregion.\+hpp\item 
+UIregion.\+cpp\end{DoxyCompactItemize}

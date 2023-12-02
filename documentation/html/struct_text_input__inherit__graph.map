@@ -1,0 +1,11 @@
+<map id="TextInput" name="TextInput">
+<area shape="rect" id="Node000001" title=" " alt="" coords="9,3312,205,3637"/>
+<area shape="rect" id="Node000002" href="$struct_u_itext.html" title=" " alt="" coords="31,2363,183,3264"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,3279,110,3312,105,3312,105,3279"/>
+<area shape="rect" id="Node000003" href="$struct_u_iregion.html" title=" " alt="" coords="5,1307,209,2315"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="110,2330,110,2363,105,2363,105,2330"/>
+<area shape="rect" id="Node000004" href="$class_drawable.html" title=" " alt="" coords="36,827,179,1259"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="110,1274,110,1307,105,1307,105,1274"/>
+<area shape="rect" id="Node000005" href="$struct_rect.html" title=" " alt="" coords="29,5,185,779"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="110,793,110,827,105,827,105,793"/>
+</map>

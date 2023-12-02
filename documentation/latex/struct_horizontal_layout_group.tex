@@ -1,0 +1,353 @@
+\doxysection{Структура Horizontal\+Layout\+Group}
+\hypertarget{struct_horizontal_layout_group}{}\label{struct_horizontal_layout_group}\index{HorizontalLayoutGroup@{HorizontalLayoutGroup}}
+
+
+Граф наследования\+:Horizontal\+Layout\+Group\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{struct_horizontal_layout_group__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Граф связей класса Horizontal\+Layout\+Group\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{struct_horizontal_layout_group__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{struct_horizontal_layout_group_ac937b69855f5c98829c8f2baa698eab3}{On\+Editable}} () override
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries UIregion} (\mbox{\hyperlink{struct_u_iregion}{UIregion}} \&\&)=delete
+\item 
+bool {\bfseries Get\+Active} () const
+\item 
+std\+::string {\bfseries Get\+Name} () const
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Clicable} (bool b)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Name} (std\+::string name)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Active} (bool active)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Left\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Right\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Up\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Bind\+Down\+Border} (\mbox{\hyperlink{struct_bind_point}{Bind\+Point}} bp)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Reset\+Bind} (uint8\+\_\+t p)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Grab} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Press} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Release} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Hold} (std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Enter} (std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Mouse\+Exit} (std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ f)
+\item 
+\mbox{\hyperlink{struct_u_iregion}{UIregion}} \& {\bfseries Set\+Callback\+On\+Editable} (std\+::function$<$ void()$>$ f)
+\item 
+virtual void \mbox{\hyperlink{struct_u_iregion_ad1639ab93874b5015283d2a5c57d6be5}{Update}} ()
+\item 
+virtual std\+::string {\bfseries Get\+Type} ()
+\item 
+bool {\bfseries Click\+Update} (bool dont\+\_\+handle\+\_\+clicks=false)
+\item 
+virtual json {\bfseries Get\+Json} ()
+\item 
+virtual void {\bfseries Set\+Json} (json)
+\item 
+virtual void {\bfseries Post\+Set\+Json} (json)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{class_drawable}{Drawable}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Texture} (std\+::string const \&texture\+\_\+path)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+BGColor} (\mbox{\hyperlink{struct_color}{Color}} const \&col)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Texture\+Rect} (\mbox{\hyperlink{struct_rect}{Rect}} const \&r)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Size} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Number} (size\+\_\+t n)
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Next} ()
+\item 
+\mbox{\hyperlink{class_drawable}{Drawable}} \& {\bfseries Set\+Sprite\+Draw\+Type} (Sprite\+Draw\+Type sdt)
+\item 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries Get\+BGColor} () const
+\item 
+std\+::string {\bfseries Get\+BGTexture\+Path} () const
+\item 
+sf\+::\+Texture \& {\bfseries Get\+BGTexture} () const
+\item 
+virtual void {\bfseries Draw} (sf\+::\+Render\+Window \&rw)
+\item 
+void {\bfseries Draw\+Update} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Rect} (float x, float y, float w, float h)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Rect\+Type} (Rect\+Type rt)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Center} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&center)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Size\+Across\+Pos} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Size\+Across\+Center} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&size)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Radius} (float r)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Width} (float width)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Height} (float height)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Up} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Up} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Down} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Down} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&pos)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Left\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Right\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Up\+Border} (float delta)
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} \& {\bfseries Set\+Down\+Border} (float delta)
+\item 
+float {\bfseries Get\+Up} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Size} () const
+\item 
+float {\bfseries Get\+Left} () const
+\item 
+float {\bfseries Get\+Down} () const
+\item 
+float {\bfseries Get\+Right} () const
+\item 
+float {\bfseries Get\+Width} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Center} () const
+\item 
+float {\bfseries Get\+Radius} () const
+\item 
+float {\bfseries Get\+Heigth} () const
+\item 
+virtual bool {\bfseries Contains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+bool {\bfseries AABBContains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+bool {\bfseries AABBIntersect} (\mbox{\hyperlink{struct_u_iregion}{UIregion}} const \&aabb)
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries AABBrelatively\+Line} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&start, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&dir)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{class_point}{Point}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Point} (\mbox{\hyperlink{class_point}{Point}} \&\&)=delete
+\item 
+{\bfseries Point} (float x, float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Parent} (\mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*}ptr)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Local\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Global\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+Position} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&p, Type t)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+LocalX} (float x)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+LocalY} (float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+GlobalX} (float x)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \& {\bfseries Set\+GlobalY} (float y)
+\item 
+\mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*} {\bfseries Get\+Parent} ()
+\item 
+std\+::vector$<$ \mbox{\hyperlink{class_point}{Point}} \texorpdfstring{$\ast$}{*} $>$ \& {\bfseries Get\+Childrens} ()
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Local\+Position} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Global\+Position} () const
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries Get\+Position} (Type t) const
+\item 
+void {\bfseries Un\+Parent} ()
+\item 
+void {\bfseries Move} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&d)
+\item 
+void {\bfseries MoveX} (float x)
+\item 
+void {\bfseries MoveY} (float y)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Дополнительные унаследованные члены}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{struct_layout_group}{Layout\+Group}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_layout_group_a3c850ea87577a4112c3fb95bffa2e796}\label{struct_layout_group_a3c850ea87577a4112c3fb95bffa2e796} 
+enum {\bfseries Alignment} \{ \newline
+{\bfseries UL}
+, {\bfseries UC}
+, {\bfseries UR}
+, {\bfseries ML}
+, \newline
+{\bfseries MC}
+, {\bfseries MR}
+, {\bfseries DL}
+, {\bfseries DC}
+, \newline
+{\bfseries DR}
+ \}
+\item 
+\Hypertarget{struct_layout_group_a9e65122f94d712f5d724c83f259cfd2a}\label{struct_layout_group_a9e65122f94d712f5d724c83f259cfd2a} 
+enum {\bfseries Connection} \{ {\bfseries Neither}
+, {\bfseries Width}
+, {\bfseries Height}
+, {\bfseries Both}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_rect_a88573f7dff291ce4e3704a2696789c32}\label{struct_rect_a88573f7dff291ce4e3704a2696789c32} 
+enum class {\bfseries Edit\+State} \+: uint8\+\_\+t \{ {\bfseries Null} = 0b0
+, {\bfseries Resize} = 0b1
+, {\bfseries Move} = 0b10
+, {\bfseries Edit} = Resize \texorpdfstring{$\vert$}{|} Move
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые типы унаследованные от \mbox{\hyperlink{class_point}{Point}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_point_a749e48522266b7ddae24082d28a98ddb}\label{class_point_a749e48522266b7ddae24082d28a98ddb} 
+enum {\bfseries Type} \+: uint8\+\_\+t \{ {\bfseries Local}
+, {\bfseries Global}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые статические члены унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class T  = UIregion$>$ }\\static T \texorpdfstring{$\ast$}{*} {\bfseries Find\+By\+Name} (std\+::string name)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые статические члены унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+static bool {\bfseries AABBContains} (\mbox{\hyperlink{struct_vector2}{Vector2}} const \&lu, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&size, \mbox{\hyperlink{struct_vector2}{Vector2}} const \&p)
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые атрибуты унаследованные от \mbox{\hyperlink{struct_layout_group}{Layout\+Group}}}
+\begin{DoxyCompactItemize}
+\item 
+enum Layout\+Group\+::\+Alignment {\bfseries MC}
+\item 
+enum Layout\+Group\+::\+Connection {\bfseries Neither}
+\end{DoxyCompactItemize}
+\doxysubsection*{Открытые атрибуты унаследованные от \mbox{\hyperlink{class_drawable}{Drawable}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_color}{Color}} {\bfseries m\+\_\+\+BGcolor} \{255,255,255\}
+\item 
+std\+::string {\bfseries m\+\_\+\+BGtexture\+Path}
+\item 
+\mbox{\hyperlink{struct_rect}{Rect}} {\bfseries m\+\_\+\+Texture\+Rect}
+\item 
+\mbox{\hyperlink{struct_vector2}{Vector2}} {\bfseries m\+\_\+\+Sprite\+Size}
+\item 
+size\+\_\+t {\bfseries m\+\_\+\+Sprite\+Num} \{ 0 \}
+\item 
+Sprite\+Draw\+Type {\bfseries m\+\_\+\+Sprite\+Draw\+Type} \{ Sprite\+Draw\+Type\+::\+Texture\+Rect \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные члены унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual void {\bfseries On\+Mouse\+Press} (Super\+Mouse\+::\+Key)
+\item 
+virtual void {\bfseries On\+Mouse\+Release} (Super\+Mouse\+::\+Key)
+\item 
+virtual void {\bfseries On\+Mouse\+Hold} (Super\+Mouse\+::\+Key)
+\item 
+virtual void {\bfseries On\+Mouse\+Grab} (Super\+Mouse\+::\+Key)
+\item 
+virtual void {\bfseries On\+Mouse\+Enter} ()
+\item 
+virtual void {\bfseries On\+Mouse\+Exit} ()
+\item 
+virtual void {\bfseries On\+Mouse\+Press\+Out} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные данные унаследованные от \mbox{\hyperlink{struct_u_iregion}{UIregion}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries m\+\_\+is\+Clicable} \{ false \}
+\item 
+bool {\bfseries is\+Grab} \mbox{[}Super\+Mouse\+::\+Num\+Keys\mbox{]}
+\item 
+bool {\bfseries is\+Available} \{ false \}
+\item 
+bool {\bfseries in\+Rect\+Now} \{ false \}
+\item 
+bool {\bfseries in\+Rect\+Prev} \{ false \}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Grab}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Press}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Release}
+\item 
+std\+::vector$<$ std\+::function$<$ void(Super\+Mouse\+::\+Key, \mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Hold}
+\item 
+std\+::vector$<$ std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Enter}
+\item 
+std\+::vector$<$ std\+::function$<$ void(\mbox{\hyperlink{struct_u_iregion}{UIregion}} \texorpdfstring{$\ast$}{*})$>$ $>$ {\bfseries FOn\+Mouse\+Exit}
+\item 
+std\+::vector$<$ std\+::function$<$ void()$>$ $>$ {\bfseries FOn\+Editable}
+\end{DoxyCompactItemize}
+\doxysubsection*{Защищенные данные унаследованные от \mbox{\hyperlink{struct_rect}{Rect}}}
+\begin{DoxyCompactItemize}
+\item 
+Rect\+Type {\bfseries m\+\_\+\+Rect\+Type} \{ Rect\+Type\+::\+Rect \}
+\item 
+Edit\+State {\bfseries m\+\_\+edit\+State} \{ Edit\+State\+::\+Null \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Методы}
+\Hypertarget{struct_horizontal_layout_group_ac937b69855f5c98829c8f2baa698eab3}\label{struct_horizontal_layout_group_ac937b69855f5c98829c8f2baa698eab3} 
+\index{HorizontalLayoutGroup@{HorizontalLayoutGroup}!OnEditable@{OnEditable}}
+\index{OnEditable@{OnEditable}!HorizontalLayoutGroup@{HorizontalLayoutGroup}}
+\doxysubsubsection{\texorpdfstring{OnEditable()}{OnEditable()}}
+{\footnotesize\ttfamily void Horizontal\+Layout\+Group\+::\+On\+Editable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Переопределяет метод предка \mbox{\hyperlink{class_drawable}{Drawable}}.
+
+
+
+Объявления и описания членов структур находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+Layout\+Group.\+hpp\item 
+Layout\+Group.\+cpp\end{DoxyCompactItemize}
