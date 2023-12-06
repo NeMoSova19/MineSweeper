@@ -13,15 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="UI.cpp">
-      <UniqueIdentifier>{d2c72694-c5c3-4447-8b3d-62b8a10f35e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI.hpp">
-      <UniqueIdentifier>{589cfd51-c025-4ec1-88f0-4695427fcd15}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\mainV.cpp">
+    <ClCompile Include="Source\main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Source\Color.cpp">
@@ -36,30 +30,6 @@
     <ClCompile Include="Source\Windower.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Dll_reader.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\UIregion.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\UIeditorRegion.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\Button.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\DropDown.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\Slider.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\Text.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\UI\Toggle.cpp">
-      <Filter>UI.cpp</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Minesweeper.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -70,6 +40,18 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Source\LayoutGroup.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Text.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Toggle.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UIregion.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Button.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,33 +68,6 @@
     <ClInclude Include="Source\Windower.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Dll_reader.hpp">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\Button.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\DropDown.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\Slider.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\Toggle.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\Text.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\UIregion.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\UIenum.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\UI\UIeditorRegion.hpp">
-      <Filter>UI.hpp</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Minesweeper.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -125,7 +80,19 @@
     <ClInclude Include="Source\LayoutGroup.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Source\НужноеНенужное.hpp">
+    <ClInclude Include="Source\Text.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Toggle.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIenum.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIregion.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Button.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

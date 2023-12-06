@@ -79,7 +79,7 @@ void Settings::SetEasyFlagging(bool b)
 	WriteSettings();
 }
 
-void Settings::SetFPS_limit(uint8_t u)
+void Settings::SetFPS_limit(uint16_t u)
 {
 	FPS_limit = u;
 	WriteSettings();
@@ -190,7 +190,7 @@ bool Settings::GetEasyFlagging()
 	return EasyFlagging;
 }
 
-uint8_t Settings::GetFPS_limit()
+uint16_t Settings::GetFPS_limit()
 {
 	return FPS_limit;
 }

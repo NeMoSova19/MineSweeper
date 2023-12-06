@@ -1,5 +1,5 @@
 #pragma once
-#include "../StandartTypes.hpp"
+#include "StandartTypes.hpp"
 #include "UIregion.hpp"
 #include "Text.hpp"
 
@@ -28,12 +28,6 @@ struct Button : public virtual UIregion {
 	// Drawing
 	void Draw(sf::RenderWindow& rw) override;
 	void Update() override;
-
-	// Json
-	json GetJson() override;
-	void SetJson(json js) override;
-	void PostSetJson(json js) override;
-
 
 	UItext* text;
 protected:

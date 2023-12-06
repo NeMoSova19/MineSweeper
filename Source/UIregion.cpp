@@ -1,6 +1,6 @@
 #include "UIregion.hpp"
-#include "../SuperMouse.hpp"
-#include "../ResourceManager.hpp"
+#include "SuperMouse.hpp"
+#include "ResourceManager.hpp"
 
 // class Point ///////////////////////////////////////////////
 Point::Point(float x, float y)
@@ -127,11 +127,6 @@ void Point::MoveY(float y)
 {
 	Move({ 0, y });
 }
-
-//const Vector2* Point::GetPositionPtr() const {
-//	return &Point_Global_position;
-//}
-
 void Point::UpdatePositionForChildrens()
 {
 	for (auto u : Point_childrens) {
@@ -236,23 +231,6 @@ Rect& Rect::SetDownBorder(float pos) {
 	SetGlobalY(pos - GetHeigth());
 	return *this;
 }
-//void Rect::MoveLeftBorder(float delta) {
-//	MoveX(delta);
-//	Rect_size.x -= delta;
-//}
-//void Rect::MoveRightBorder(float delta) {
-//	Rect_size.x += delta;
-//}
-//void Rect::MoveUpBorder(float delta) {
-//	MoveY(delta);
-//	Rect_size.y -= delta;
-//}
-//void Rect::MoveDownBorder(float delta) {
-//	Rect_size.y += delta;
-//}
-//const Vector2* Rect::GetSizePtr() const {
-//	return &Rect_size;
-//}
 Vector2 Rect::GetCenter() const {
 	return GetGlobalPosition() + Rect_size / 2;
 }
@@ -288,12 +266,6 @@ bool Rect::AABBContains(Vector2 const& lu, Vector2 const& size, Vector2 const& p
 bool Rect::AABBContains(Vector2 const& p) {
 	Vector2 v = p - GetGlobalPosition();
 	return v <= Rect_size && v >= Vector2(0, 0);
-}
-bool Rect::AABBIntersect(UIregion const& aabb) {
-	return true;
-}
-Vector2 Rect::AABBrelativelyLine(Vector2 const& start, Vector2 const& dir) {
-	return Vector2();
 }
 bool Rect::Contains(Vector2 const& p)
 {
@@ -333,6 +305,7 @@ Drawable& Drawable::SetSpriteSize(Vector2 const& size) {
 	return *this;
 }
 Drawable& Drawable::SetSpriteNumber(size_t n) {
+	if (m_SpriteNum == n) return *this;
 	m_SpriteNum = n;
 	DrawUpdate();
 	return *this;
@@ -382,6 +355,8 @@ void Drawable::Draw(sf::RenderWindow& rw)
 }
 void Drawable::DrawUpdate()
 {
+	NeedDraw = true;
+
 	rs = sf::RenderStates::Default;
 	switch (m_RectType)
 	{
@@ -419,21 +394,6 @@ void Drawable::DrawUpdate()
 	}
 	break;
 	case RectType::Circle:
-		/*
-		sf::VertexArray var(sf::PrimitiveType::TrianglesFan, 32);
-			double ang{ 2 * M_PI / 32 };
-			Vector2 c = GetCenter();
-			float ratio = GetWidth() / GetHeigth(); // >= 1 в большинстве случаев
-
-			for (size_t i = 0; i < 32; i++)
-			{
-				Vector2 r_vec = Vector2(cos(i * ang), sin(i * ang));
-				r_vec.x *= ratio;
-				var[i].position = c + r_vec * GetHeigth()/2;
-				var[i].color = Color::Green;
-			}
-			rw.draw(var);
-		*/
 	{
 		double ang{ 2 * M_PI / 32 };
 		float r = GetWidth() / 2;
@@ -463,46 +423,6 @@ void Drawable::DrawUpdate()
 
 
 // UIregion
-json UIregion::GetJson()
-{
-	json js;
-	js["type"] = "UIregion";
-	js["name"] = Name;
-	js["local_position"] = { GetLocalPosition().x, GetLocalPosition().y };
-	js["size"] = { GetSize().x, GetSize().y };
-	js["childrens"] = json::array();
-	for (auto& i : GetChildrens()) {
-		js["childrens"].push_back(static_cast<UIregion*>(i)->GetName());
-	}
-	js["isClicable"] = m_isClicable;
-	js["isActive"] = m_isActive;
-	js["editState"] = (int)m_editState;
-	js["BGcolor"] = { m_BGcolor.r, m_BGcolor.g, m_BGcolor.b, m_BGcolor.a };
-	js["BGtexture"] = m_BGtexturePath;
-	
-	return js;
-}
-void UIregion::SetJson(json js)
-{
-	SetName(js["name"]);
-	SetLocalPosition({js["local_position"][0], js["local_position"][1]});
-	SetSizeAcrossPos({ js["size"][0],js["size"][1] });
-
-	m_isClicable = js["isClicable"];
-	m_isActive = js["isActive"];
-	m_editState = (EditState)js["editState"];
-	 m_BGcolor.r = js["BGcolor"][0];
-	 m_BGcolor.g = js["BGcolor"][1];
-	 m_BGcolor.b = js["BGcolor"][2];
-	 m_BGcolor.a = js["BGcolor"][3];
-	m_BGtexturePath = js["BGtexture"];
-}
-void UIregion::PostSetJson(json js)
-{
-	for (auto& i : js["childrens"]) {
-		FindByName<UIregion>(i)->SetParent(this);
-	}
-}
 UIregion& UIregion::SetName(std::string name)
 {
 	m_UIregions.erase(Name);
@@ -526,26 +446,6 @@ UIregion::UIregion()
 }
 UIregion::~UIregion() {
 	m_UIregions.erase(Name);
-}
-UIregion& UIregion::SetBindLeftBorder(BindPoint bp) {
-	m_bindPoint[0] = bp;
-	return *this;
-}
-UIregion& UIregion::SetBindRightBorder(BindPoint bp) {
-	m_bindPoint[2] = bp;
-	return *this;
-}
-UIregion& UIregion::SetBindUpBorder(BindPoint bp) {
-	m_bindPoint[1] = bp;
-	return *this;
-}
-UIregion& UIregion::SetBindDownBorder(BindPoint bp) {
-	m_bindPoint[3] = bp;
-	return *this;
-}
-UIregion& UIregion::ResetBind(uint8_t p) {
-	m_bindPoint[0].Reset();
-	return *this;
 }
 UIregion& UIregion::SetActive(bool active)
 {
@@ -599,6 +499,14 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 		inRectPrev = inRectNow;
 		inRectNow = Contains(SuperMouse::map_pose);
 
+		if (!inRectNow) {
+			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
+				if (SuperMouse::mButtonState[i] == SuperMouse::Press) {
+					OnMousePressOut((SuperMouse::Key)i);
+				}
+			}
+		}
+
 		if (!inRectPrev && !inRectNow) { // не в rect 
 			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
 				if (SuperMouse::mButtonState[i] == SuperMouse::Hold) {
@@ -639,7 +547,7 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 			return false;
 		}
 
-		if (inRectNow && inRectPrev) {
+		if (inRectNow && inRectPrev) { // в rect
 			bool preAvailable{ false };
 			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
 				preAvailable |= SuperMouse::mButtonState[i] != SuperMouse::Not_press;
@@ -691,35 +599,7 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 }
 
 void UIregion::Update()
-{
-	// Bind point - в разработке(доработке)
-	//Vector2 poses[4];
-	//uint32_t rigids[4];
-	//for (size_t i = 0; i < 4; i++)
-	//{
-	//	poses[i] = m_bindPoint[i].GetPoint();
-	//	rigids[i] = m_bindPoint[i].GetSpringRigid();
-	//}
-	//if (m_bindPoint[0].GetType() == BindPoint::BindType::MoveSide && m_bindPoint[0].IsExist()) 
-	//	SetLeftBorder(poses[0].x);
-	//if (m_bindPoint[1].GetType() == BindPoint::BindType::MoveSide && m_bindPoint[1].IsExist())
-	//	SetUpBorder(poses[1].y);
-	//if (m_bindPoint[2].GetType() == BindPoint::BindType::MoveSide && m_bindPoint[2].IsExist())
-	//	SetRightBorder(poses[2].x);
-	// 
-	//if (m_bindPoint[3].GetType() == BindPoint::BindType::MoveSide && m_bindPoint[3].IsExist())
-	//	SetDownBorder(poses[3].y);
-	//
-	//if (m_bindPoint[0].IsExist() || m_bindPoint[2].IsExist()) { // x
-	//	if(rigids[0] + rigids[2] != 0)
-	//		SetGlobalX( poses[0].x + (poses[2].x - poses[0].x - Rect_size.x) * rigids[2] / (rigids[0] + rigids[2]));
-	//}
-	//if (m_bindPoint[1].IsExist() || m_bindPoint[3].IsExist()) { // y
-	//	if (rigids[1] + rigids[3] != 0)
-	//		SetGlobalY(poses[1].y + (poses[3].y - poses[1].y - Rect_size.y) * rigids[3] / (rigids[1] + rigids[3]));
-	//}
-	
-	/// Проверка на изменение позиции или размера
+{	
 	m_editState = static_cast<EditState>((char(GetGlobalPosition() != M_position) << 1) | char(GetSize() != M_size));
 
 	if (m_editState != EditState::Null) {

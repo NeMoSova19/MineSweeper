@@ -263,8 +263,8 @@ void Game::Start() {
 	Tile::SetGameOver([]() {
 		isPause = true;
 		GameLose = true;
-		Canvas::SceneSettings("Game", true, false);
-		Canvas::SceneSettings("LoseGame", true, true);
+		Scene::CanvasSettings("Game", true, false);
+		Scene::CanvasSettings("LoseGame", true, true);
 		Settings::Where = WHERE::LoseGame;
 
 		for (auto& line : Tile::map) {
@@ -279,13 +279,13 @@ void Game::Start() {
 		Settings::SetStat({0, 1, (size_t)m_time}, type);
 		});
 
-	auto& m_bg = Canvas::AddOnScene("Game", new UIregion);
-	auto& cnt_flag1 = Canvas::AddOnScene("Game", new UIregion);
-	auto& cnt_flag2 = Canvas::AddOnScene("Game", new UIregion);
-	auto& cnt_flag3 = Canvas::AddOnScene("Game", new UIregion);
-	auto& time_1 = Canvas::AddOnScene("Game", new UIregion);
-	auto& time_2 = Canvas::AddOnScene("Game", new UIregion);
-	auto& time_3 = Canvas::AddOnScene("Game", new UIregion);
+	auto& m_bg = Scene::AddOnCanvas("Game", new UIregion);
+	auto& cnt_flag1 = Scene::AddOnCanvas("Game", new UIregion);
+	auto& cnt_flag2 = Scene::AddOnCanvas("Game", new UIregion);
+	auto& cnt_flag3 = Scene::AddOnCanvas("Game", new UIregion);
+	auto& time_1 = Scene::AddOnCanvas("Game", new UIregion);
+	auto& time_2 = Scene::AddOnCanvas("Game", new UIregion);
+	auto& time_3 = Scene::AddOnCanvas("Game", new UIregion);
 	cnt_flag2.SetParent(&cnt_flag1);
 	cnt_flag3.SetParent(&cnt_flag2);
 	time_2.SetParent(&time_1);
@@ -419,7 +419,7 @@ void Game::Start() {
 			Tile::map[i][j]->SetSpriteDrawType(SpriteDrawType::SpriteAnim);
 			Tile::map[i][j]->text->SetCharacterSize(tile_size);
 			Tile::map[i][j]->text->SetSizeAcrossPos({ tile_size, tile_size });
-			Canvas::AddOnScene("Game", Tile::map[i][j]);
+			Scene::AddOnCanvas("Game", Tile::map[i][j]);
 		}
 	}
 	while (!Tile::Boom_queue.empty()) {
@@ -432,8 +432,8 @@ void Game::Update(float deltaTime) {
 		if (!isPause) {
 			if (Tile::total_opened_tiles + Tile::total_placed_flags == Tile::map.size() * Tile::map[0].size()) {
 				isPause = true;
-				Canvas::SceneSettings("Game", true, false);
-				Canvas::SceneSettings("WinGame", true, true);
+				Scene::CanvasSettings("Game", true, false);
+				Scene::CanvasSettings("WinGame", true, true);
 				Settings::Where = WHERE::WinGame;
 				
 				Settings::SetStat({ 1, 0, (size_t)m_time }, type);
@@ -466,7 +466,7 @@ void Game::Restart() {
 	isStart = true;
 	isPause = false;
 	m_time = 0;
-	Canvas::Clear("Game");
+	Scene::Clear("Game");
 	Start();
 }
 
@@ -474,5 +474,5 @@ void Game::Close() {
 	isStart = false;
 	isPause = false;
 	m_time = 0;
-	Canvas::Clear("Game");
+	Scene::Clear("Game");
 }

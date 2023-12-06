@@ -1,17 +1,14 @@
 #include "Windower.hpp"
 #include "SuperMouse.hpp"
 #include <string>
-#include "UI/UIregion.hpp"
-#include "UI/Text.hpp"
-#include "UI/Button.hpp"
-#include "UI/Toggle.hpp"
+#include "UIregion.hpp"
+#include "Text.hpp"
+#include "Button.hpp"
+#include "Toggle.hpp"
 #include "LayoutGroup.hpp"
 #include "Canvas.hpp"
-#include "Dll_reader.hpp"
 #include "Minesweeper.hpp"
 #include "Settings.hpp"
-#include "UI/UIeditorRegion.hpp"
-
 
 
 void __CloseWindow(sf::Event const e) {
@@ -19,36 +16,37 @@ void __CloseWindow(sf::Event const e) {
 		switch (Settings::Where)
 		{
 		case WHERE::Stats:
-			Canvas::SceneSettings("Stats");
-			Canvas::SceneSettings("MainMenu", true, true);
+			Scene::CanvasSettings("Stats");
+			Scene::CanvasSettings("MainMenu", true, true);
 			Settings::Where = WHERE::MainMenu;
-			return;
-		case WHERE::MainMenu:
-			Windower::Win.rw.close();
 			return;
 
 		case WHERE::Game:
-			//Canvas::DisableAll();
-			Canvas::SceneSettings("Game", true, false);
-			Canvas::SceneSettings("Exit", true, true);
+			Scene::CanvasSettings("Game", true, false);
+			Scene::CanvasSettings("Exit", true, true);
 			Settings::Where = WHERE::Exit;
-			//Game::Pause();
 			return;
 
 		case WHERE::Exit:
-			Canvas::SceneSettings("Exit");
-			Canvas::SceneSettings("Game", true, true);
-			//Game::UnPause();
+			Scene::CanvasSettings("Exit");
+			Scene::CanvasSettings("Game", true, true);
 			Settings::Where = WHERE::Game;
 			return;
 
 		case WHERE::Settings:
-			Canvas::SceneSettings("Settings");
-			Canvas::SceneSettings("MainMenu", true, true);
+			Scene::CanvasSettings("Settings");
+			Scene::CanvasSettings("MainMenu", true, true);
 			Settings::Where = WHERE::MainMenu;
 			return;
 		}
 	}
+}
+
+void __OnFocusExit(sf::Event const e) {
+	if (!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit()/10);
+}
+void __OnFocusEnter(sf::Event const e) {
+	if (!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit());
 }
 
 struct FPS {
@@ -71,13 +69,64 @@ struct FPS {
 	static inline std::deque<int> deq;
 };
 
-typedef size_t(*SizeTFunc)();
+void Init();
+
+int main() {
+	Settings::ReadSettings();
+	
+	sf::Image ico; ico.loadFromFile("Minesweeper.png");
+	Windower::Win.Create({800,800}, "Minesweeper", sf::Style::Close);
+	Windower::Win.rw.setIcon(ico.getSize().x, ico.getSize().y, ico.getPixelsPtr());
+	Windower::Win.rw.setVerticalSyncEnabled(Settings::GetVSunc());
+	Windower::Win.AddEventCallback(sf::Event::KeyPressed, __CloseWindow);
+	Windower::Win.AddEventCallback(sf::Event::Closed, __CloseWindow);
+	Windower::Win.AddEventCallback(sf::Event::GainedFocus, __OnFocusEnter);
+	Windower::Win.AddEventCallback(sf::Event::LostFocus, __OnFocusExit);
+	SuperMouse::initialize(&Windower::Win.rw);
+
+	if(!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit());
+
+	if(Settings::GetTheme() == Themes::Dark)
+		Windower::Win.SetTitlebarColor(Color(125, 125, 125));
+	else
+		Windower::Win.SetTitlebarColor(Color::White);
+
+	Init();
+	
+	////////////////////////////////////////////////////////
+	sf::Clock cl;
+	sf::Time elTime;
+	while (Windower::Win.rw.isOpen()) {
+		// Update
+		UIregion::NeedDraw = false;
+		UIregion::FindByName<UItext>("S_t8")->SetText(L"fps: " + std::to_wstring((size_t)FPS::total));
+		Windower::Win.CheckEvents();
+		SuperMouse::update();
+		Windower::Win.Update();
+		Game::Update(elTime.asSeconds());
+		Scene::Update();
+	
+		// Draw
+		Windower::Win.rw.clear();
+		Scene::Draw(Windower::Win.rw);
+		Windower::Win.rw.display();
+		
+	
+		elTime = cl.getElapsedTime();
+		cl.restart();
+		FPS::Add(int(1. / elTime.asSeconds()));
+	
+	}
+
+	Windower::Win.rw.close();
+	return 0;
+}
 
 void Init() {
 	// Layer0
-	Canvas::CreateScene("Layer0");
-	Canvas::SceneSettings("Layer0", true, true, true);
-	auto& BG_r  = Canvas::AddOnScene("Layer0", new UIregion);
+	Scene::CreateCanvas("Layer0");
+	Scene::CanvasSettings("Layer0", true, true, true);
+	auto& BG_r = Scene::AddOnCanvas("Layer0", new UIregion);
 
 	BG_r
 		// UIregion
@@ -92,20 +141,20 @@ void Init() {
 
 
 	// MainMenu
-	Canvas::CreateScene("MainMenu");
-	Canvas::SceneSettings("MainMenu", true, true);
-	auto& MM_bg = Canvas::AddOnScene("MainMenu", new UIregion); // bg
-	auto& MM_t  = Canvas::AddOnScene("MainMenu", new UItext); // text
-	auto& MM_t1 = Canvas::AddOnScene("MainMenu", new Button); // gm
-	auto& MM_t2 = Canvas::AddOnScene("MainMenu", new Button); // gm
-	auto& MM_t3 = Canvas::AddOnScene("MainMenu", new Button); // gm
-	auto& MM_b1 = Canvas::AddOnScene("MainMenu", new Button); // stats
-	auto& MM_b2 = Canvas::AddOnScene("MainMenu", new Button); // settings
-	auto& MM_b3 = Canvas::AddOnScene("MainMenu", new Button); // exit
+	Scene::CreateCanvas("MainMenu");
+	Scene::CanvasSettings("MainMenu", true, true);
+	auto& MM_bg = Scene::AddOnCanvas("MainMenu", new UIregion); // bg
+	auto& MM_t = Scene::AddOnCanvas("MainMenu", new UItext); // text
+	auto& MM_t1 = Scene::AddOnCanvas("MainMenu", new Button); // gm
+	auto& MM_t2 = Scene::AddOnCanvas("MainMenu", new Button); // gm
+	auto& MM_t3 = Scene::AddOnCanvas("MainMenu", new Button); // gm
+	auto& MM_b1 = Scene::AddOnCanvas("MainMenu", new Button); // stats
+	auto& MM_b2 = Scene::AddOnCanvas("MainMenu", new Button); // settings
+	auto& MM_b3 = Scene::AddOnCanvas("MainMenu", new Button); // exit
 
-	auto& MM_vlg1 = Canvas::AddOnScene("MainMenu", new VerticalLayoutGroup);
-	auto& MM_hlg1 = Canvas::AddOnScene("MainMenu", new HorizontalLayoutGroup);
-	auto& MM_vlg2 = Canvas::AddOnScene("MainMenu", new VerticalLayoutGroup);
+	auto& MM_vlg1 = Scene::AddOnCanvas("MainMenu", new VerticalLayoutGroup);
+	auto& MM_hlg1 = Scene::AddOnCanvas("MainMenu", new HorizontalLayoutGroup);
+	auto& MM_vlg2 = Scene::AddOnCanvas("MainMenu", new VerticalLayoutGroup);
 
 	MM_vlg1.SetParent(&Windower::Win);
 	MM_bg.SetParent(&MM_vlg1);
@@ -171,7 +220,7 @@ void Init() {
 		.SetBGColor(Color::White)
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)	
+		.SetRectType(RectType::Rect)
 		// Rect
 		.SetSizeAcrossPos({ 140,140 })
 		.SetCenter({ 250,350 });
@@ -197,7 +246,7 @@ void Init() {
 	MM_t2
 		// Button
 		.SetNormalColor(Color::White)
-		.SetHoverColor(Color(0,0,0,25))
+		.SetHoverColor(Color(0, 0, 0, 25))
 		.SetTouchColor(Color::White)
 		// UIregion
 		.SetName("MM_B_t2")
@@ -238,8 +287,8 @@ void Init() {
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
 		.SetRectType(RectType::Rect)
-		
-		
+
+
 		// Rect
 		.SetSizeAcrossPos({ 140,140 })
 		.SetCenter({ 550,350 });
@@ -331,7 +380,7 @@ void Init() {
 	MM_b3
 		// Button
 		.SetNormalColor(Color::White)
-		.SetHoverColor(Color(0,0,0,25))
+		.SetHoverColor(Color(0, 0, 0, 25))
 		.SetTouchColor(Color::White)
 		// UIregion
 		.SetName("MM_B_b3")
@@ -362,20 +411,20 @@ void Init() {
 		.SetSizeAcrossPos({ 300,100 });
 
 	// Game
-	Canvas::CreateScene("Game");
-	Canvas::SceneSettings("Game", false, false);
+	Scene::CreateCanvas("Game");
+	Scene::CanvasSettings("Game", false, false);
 
 
 
 	// WinGame
-	Canvas::CreateScene("WinGame");
-	Canvas::SceneSettings("WinGame", false, false);
-	auto& W_bg = Canvas::AddOnScene("WinGame", new UIregion);
-	auto& W_t =  Canvas::AddOnScene("WinGame", new UItext);
-	auto& W_b1 = Canvas::AddOnScene("WinGame", new Button);
-	auto& W_b2 = Canvas::AddOnScene("WinGame", new Button);
-	auto& W_hlg = Canvas::AddOnScene("WinGame", new VerticalLayoutGroup);
-	auto& W_vlg = Canvas::AddOnScene("WinGame", new VerticalLayoutGroup);
+	Scene::CreateCanvas("WinGame");
+	Scene::CanvasSettings("WinGame", false, false);
+	auto& W_bg = Scene::AddOnCanvas("WinGame", new UIregion);
+	auto& W_t = Scene::AddOnCanvas("WinGame", new UItext);
+	auto& W_b1 = Scene::AddOnCanvas("WinGame", new Button);
+	auto& W_b2 = Scene::AddOnCanvas("WinGame", new Button);
+	auto& W_hlg = Scene::AddOnCanvas("WinGame", new VerticalLayoutGroup);
+	auto& W_vlg = Scene::AddOnCanvas("WinGame", new VerticalLayoutGroup);
 
 	W_t.SetParent(&W_vlg);
 	W_b2.SetParent(&W_vlg);
@@ -488,14 +537,14 @@ void Init() {
 
 
 	// LoseGame
-	Canvas::CreateScene("LoseGame");
-	Canvas::SceneSettings("LoseGame", false, false);
-	auto& L_bg = Canvas::AddOnScene("LoseGame", new UIregion);
-	auto& L_t  = Canvas::AddOnScene("LoseGame", new UItext);
-	auto& L_b1 = Canvas::AddOnScene("LoseGame", new Button);
-	auto& L_b2 = Canvas::AddOnScene("LoseGame", new Button);
-	auto& L_hlg = Canvas::AddOnScene("LoseGame", new VerticalLayoutGroup);
-	auto& L_vlg = Canvas::AddOnScene("LoseGame", new VerticalLayoutGroup);
+	Scene::CreateCanvas("LoseGame");
+	Scene::CanvasSettings("LoseGame", false, false);
+	auto& L_bg = Scene::AddOnCanvas("LoseGame", new UIregion);
+	auto& L_t = Scene::AddOnCanvas("LoseGame", new UItext);
+	auto& L_b1 = Scene::AddOnCanvas("LoseGame", new Button);
+	auto& L_b2 = Scene::AddOnCanvas("LoseGame", new Button);
+	auto& L_hlg = Scene::AddOnCanvas("LoseGame", new VerticalLayoutGroup);
+	auto& L_vlg = Scene::AddOnCanvas("LoseGame", new VerticalLayoutGroup);
 
 	L_t.SetParent(&L_vlg);
 	L_b2.SetParent(&L_vlg);
@@ -506,7 +555,7 @@ void Init() {
 
 	L_hlg.connection = LayoutGroup::Connection::Both;
 	L_hlg.alignment = LayoutGroup::Alignment::MC;
-	
+
 	L_vlg.connection = LayoutGroup::Connection::Both;
 	L_vlg.alignment = LayoutGroup::Alignment::MC;
 
@@ -515,7 +564,7 @@ void Init() {
 		.SetName("E_bg")
 		.SetBGColor(Color(255, 255, 255, 200))
 		.SetTexture("MenuBG")
-		.SetTextureRect({0,0,600,700})
+		.SetTextureRect({ 0,0,600,700 })
 		.SetSpriteDrawType(SpriteDrawType::TextureRect)
 		// Rect
 		.SetSizeAcrossPos({ 400,400 });
@@ -606,15 +655,15 @@ void Init() {
 
 
 	// Exit
-	Canvas::CreateScene("Exit");
-	Canvas::SceneSettings("Exit", false, false);
-	auto& E_bg = Canvas::AddOnScene("Exit", new UIregion);
-	auto& E_t  = Canvas::AddOnScene("Exit", new UItext);
-	auto& E_b1 = Canvas::AddOnScene("Exit", new Button);
-	auto& E_b2 = Canvas::AddOnScene("Exit", new Button);
-	auto& E_b3 = Canvas::AddOnScene("Exit", new Button);
-	auto& E_vlg= Canvas::AddOnScene("Exit", new VerticalLayoutGroup);
-	auto& E_vlg1= Canvas::AddOnScene("Exit", new VerticalLayoutGroup);
+	Scene::CreateCanvas("Exit");
+	Scene::CanvasSettings("Exit", false, false);
+	auto& E_bg = Scene::AddOnCanvas("Exit", new UIregion);
+	auto& E_t = Scene::AddOnCanvas("Exit", new UItext);
+	auto& E_b1 = Scene::AddOnCanvas("Exit", new Button);
+	auto& E_b2 = Scene::AddOnCanvas("Exit", new Button);
+	auto& E_b3 = Scene::AddOnCanvas("Exit", new Button);
+	auto& E_vlg = Scene::AddOnCanvas("Exit", new VerticalLayoutGroup);
+	auto& E_vlg1 = Scene::AddOnCanvas("Exit", new VerticalLayoutGroup);
 
 	//ed.Set(&E_hlg);
 
@@ -628,7 +677,7 @@ void Init() {
 
 	E_vlg.connection = LayoutGroup::Connection::Both;
 	E_vlg.alignment = LayoutGroup::Alignment::MC;
-	
+
 	E_vlg1.connection = LayoutGroup::Connection::Both;
 	E_vlg1.alignment = LayoutGroup::Alignment::MC;
 
@@ -661,7 +710,7 @@ void Init() {
 		.SetBGColor(Color(0, 0, 0, 0))
 		// Rect
 		.SetSizeAcrossPos({ 400,50 });
-		
+
 
 
 	E_b1
@@ -764,28 +813,29 @@ void Init() {
 
 
 	// Settings
-	Canvas::CreateScene("Settings");
-	Canvas::SceneSettings("Settings", false, false);
-	auto& S_bg = Canvas::AddOnScene("Settings", new UIregion);
+	Scene::CreateCanvas("Settings");
+	Scene::CanvasSettings("Settings", false, false);
+	auto& S_bg = Scene::AddOnCanvas("Settings", new UIregion);
 
-	auto& S_t  = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t1 = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t2 = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t3 = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t4 = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t5 = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t6 = Canvas::AddOnScene("Settings", new UItext);
-	auto& S_t7 = Canvas::AddOnScene("Settings", new UItext);
+	auto& S_t = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t1 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t2 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t3 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t4 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t5 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t6 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t7 = Scene::AddOnCanvas("Settings", new UItext);
+	auto& S_t8 = Scene::AddOnCanvas("Settings", new UItext);
 
-	auto& S_ti1 = Canvas::AddOnScene("Settings", new TextInput);
-	auto& S_b1  = Canvas::AddOnScene("Settings", new Toggle);
-	auto& S_b2  = Canvas::AddOnScene("Settings", new Toggle);
-	auto& S_b3  = Canvas::AddOnScene("Settings", new Toggle);
-	auto& S_b4  = Canvas::AddOnScene("Settings", new Toggle);
-	auto& S_b5  = Canvas::AddOnScene("Settings", new Toggle);
+	auto& S_ti1 = Scene::AddOnCanvas("Settings", new TextInput);
+	auto& S_b1 = Scene::AddOnCanvas("Settings", new Toggle);
+	auto& S_b2 = Scene::AddOnCanvas("Settings", new Toggle);
+	auto& S_b3 = Scene::AddOnCanvas("Settings", new Toggle);
+	auto& S_b4 = Scene::AddOnCanvas("Settings", new Toggle);
+	auto& S_b5 = Scene::AddOnCanvas("Settings", new Toggle);
 
-	auto& S_cntr = Canvas::AddOnScene("Settings", new VerticalLayoutGroup);
-	auto& S_grid = Canvas::AddOnScene("Settings", new ColumnGridLayoutGroup);
+	auto& S_cntr = Scene::AddOnCanvas("Settings", new VerticalLayoutGroup);
+	auto& S_grid = Scene::AddOnCanvas("Settings", new ColumnGridLayoutGroup);
 
 	S_grid.SetCount(2);
 	S_grid.SetPercent(0, 0.85f);
@@ -806,25 +856,26 @@ void Init() {
 	S_ti1.SetParent(&S_grid);
 
 	S_t2.SetParent(&S_grid);
-	S_b1. SetParent(&S_grid);
-	
+	S_b1.SetParent(&S_grid);
+
 	S_t3.SetParent(&S_grid);
-	S_b2. SetParent(&S_grid);
-	
+	S_b2.SetParent(&S_grid);
+
 	S_t4.SetParent(&S_grid);
-	S_b3. SetParent(&S_grid);
-	
+	S_b3.SetParent(&S_grid);
+
 	S_t5.SetParent(&S_grid);
-	S_b4. SetParent(&S_grid);
-	
+	S_b4.SetParent(&S_grid);
+
 	S_t6.SetParent(&S_grid);
-	S_b5. SetParent(&S_grid);
+	S_b5.SetParent(&S_grid);
 
 	S_t.SetParent(&S_bg);
 	S_t7.SetParent(&S_bg);
-	
+
 
 	S_ti1
+		.SetTextContent(TextContent::digits)
 		// UItext
 		.SetText(std::to_wstring(Settings::GetFPS_limit()))
 		.SetStyle(sf::Text::Style::Bold | sf::Text::Style::Italic)
@@ -874,7 +925,7 @@ void Init() {
 		.SetBGColor(Color(0, 0, 0, 0))
 		// Rect
 		.SetSizeAcrossPos({ 320,120 })
-		.SetLocalPosition({140,0});
+		.SetLocalPosition({ 140,0 });
 	S_t1
 		// UItext
 		.SetText(L" Ограничение FPS")
@@ -1001,7 +1052,26 @@ void Init() {
 		.SetBGColor(Color(0, 0, 0, 0))
 		// Rect
 		.SetSizeAcrossPos({ 500,35 })
-		.SetLocalPosition({12,665});
+		.SetLocalPosition({ 12,665 });
+	S_t8
+		// UItext
+		.SetText(L"fps:")
+		.SetStyle(sf::Text::Style::Italic)
+		.SetTextFillColor(Color(0, 0, 0))
+		.SetTextOutlineColor(Color(0, 0, 0))
+		.SetOutlineThickness(0)
+		.SetFont("Fonts/consola.ttf")
+		.SetCharacterSize(30)
+		.SetAlignment(AlignmentHorizontal::Left)
+		.SetAlignment(AlignmentVertical::Top)
+		.SetTextRectType(TextRectType::Bounded)
+		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
+		// UIregion
+		.SetName("S_t8")
+		.SetBGColor(Color(0, 0, 0, 0))
+		// Rect
+		.SetSizeAcrossPos({ 300,50 })
+		.SetLocalPosition({ 0,0 });
 
 	S_b1
 		// Toggle
@@ -1120,27 +1190,27 @@ void Init() {
 
 
 
-	Canvas::CreateScene("Stats");
-	Canvas::SceneSettings("Stats", false, false);
-	auto& Ss_bg = Canvas::AddOnScene("Stats", new UIregion);
-	
-	auto& Ss_t  = Canvas::AddOnScene("Stats", new UItext);
-	auto& Ss_t1 = Canvas::AddOnScene("Stats", new UItext); // Выиграно матчей
-	auto& Ss_t2 = Canvas::AddOnScene("Stats", new UItext); // Проиграно матчей
-	auto& Ss_t3 = Canvas::AddOnScene("Stats", new UItext); // Лучшее время
-	auto& Ss_t4 = Canvas::AddOnScene("Stats", new UItext); // Выиграно матчей (число)
-	auto& Ss_t5 = Canvas::AddOnScene("Stats", new UItext); // Проиграно матчей (число)
-	auto& Ss_t6 = Canvas::AddOnScene("Stats", new UItext); // Лучшее время (число)
-	auto& Ss_t7 = Canvas::AddOnScene("Stats", new UItext);
+	Scene::CreateCanvas("Stats");
+	Scene::CanvasSettings("Stats", false, false);
+	auto& Ss_bg = Scene::AddOnCanvas("Stats", new UIregion);
 
-	auto& Ss_b1 = Canvas::AddOnScene("Stats", new Toggle); // Режим 9х9
-	auto& Ss_b2 = Canvas::AddOnScene("Stats", new Toggle); // Режим 16х16
-	auto& Ss_b3 = Canvas::AddOnScene("Stats", new Toggle); // Режим 30х16
-	auto& Ss_b4 = Canvas::AddOnScene("Stats", new Button); // Сбросить статистику
+	auto& Ss_t = Scene::AddOnCanvas("Stats", new UItext);
+	auto& Ss_t1 = Scene::AddOnCanvas("Stats", new UItext); // Выиграно матчей
+	auto& Ss_t2 = Scene::AddOnCanvas("Stats", new UItext); // Проиграно матчей
+	auto& Ss_t3 = Scene::AddOnCanvas("Stats", new UItext); // Лучшее время
+	auto& Ss_t4 = Scene::AddOnCanvas("Stats", new UItext); // Выиграно матчей (число)
+	auto& Ss_t5 = Scene::AddOnCanvas("Stats", new UItext); // Проиграно матчей (число)
+	auto& Ss_t6 = Scene::AddOnCanvas("Stats", new UItext); // Лучшее время (число)
+	auto& Ss_t7 = Scene::AddOnCanvas("Stats", new UItext);
 
-	auto& Ss_cntr = Canvas::AddOnScene("Stats", new VerticalLayoutGroup);
-	auto& Ss_hlg = Canvas::AddOnScene("Stats", new HorizontalLayoutGroup);
-	auto& Ss_grid = Canvas::AddOnScene("Stats", new ColumnGridLayoutGroup);
+	auto& Ss_b1 = Scene::AddOnCanvas("Stats", new Toggle); // Режим 9х9
+	auto& Ss_b2 = Scene::AddOnCanvas("Stats", new Toggle); // Режим 16х16
+	auto& Ss_b3 = Scene::AddOnCanvas("Stats", new Toggle); // Режим 30х16
+	auto& Ss_b4 = Scene::AddOnCanvas("Stats", new Button); // Сбросить статистику
+
+	auto& Ss_cntr = Scene::AddOnCanvas("Stats", new VerticalLayoutGroup);
+	auto& Ss_hlg = Scene::AddOnCanvas("Stats", new HorizontalLayoutGroup);
+	auto& Ss_grid = Scene::AddOnCanvas("Stats", new ColumnGridLayoutGroup);
 
 	auto Ss_toggle_group = new ToggleGroup;
 	Ss_b1.SetGroup(Ss_toggle_group);
@@ -1183,7 +1253,7 @@ void Init() {
 
 	Ss_b1
 		// Toggle
-		.SetSelectColor(Color(127,255,127))
+		.SetSelectColor(Color(127, 255, 127))
 		.SetSelect(true)
 		// Button
 		.SetNormalColor(Color::White)
@@ -1319,7 +1389,7 @@ void Init() {
 	Ss_bg
 		// UIregion
 		.SetName("Ss_bg")
-		.SetBGColor(Color(255,255,255,240))
+		.SetBGColor(Color(255, 255, 255, 240))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
 		.SetSpriteDrawType(SpriteDrawType::TextureRect)
@@ -1472,17 +1542,19 @@ void Init() {
 		// Rect
 		.SetSizeAcrossPos({ 500,35 })
 		.SetLocalPosition({ 12,665 });
-	
 
+	S_ti1.SetCallbackOnTextOffFocus([&]() {
+		Settings::SetFPS_limit(stoi(S_ti1.GetText()));
+		});
 	S_ti1.SetCallbackOnTextEnter([&]() {
-		Settings::SetFPS_limit(std::stoi(S_ti1.GetText()));
+		Settings::SetFPS_limit(stoi(S_ti1.GetText()));
 		});
 	S_b1.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
 			if (dynamic_cast<Toggle*>(reg)->GetSelect()) {
 				Settings::SetVSunc(true);
 				dynamic_cast<Toggle*>(reg)->SetTexture("ToggleOn");
-				
+
 			}
 			else {
 				Settings::SetVSunc(false);
@@ -1577,28 +1649,28 @@ void Init() {
 	// main menu
 	MM_t1.SetCallbackOnMousePress([](SuperMouse::Key, UIregion*) {
 		Game::type = Game::x9x9;
-		Canvas::SceneSettings("MainMenu");
-		
+		Scene::CanvasSettings("MainMenu");
+
 		Windower::Win.SetSize({ 660,840 });
 		Windower::Win.Centering();
 
-		Canvas::SceneSettings("Game", true, true);
+		Scene::CanvasSettings("Game", true, true);
 		Settings::Where = WHERE::Game;
 		Game::Start();
 
 		if (Settings::GetTheme() == Themes::Dark)
-			Windower::Win.SetTitlebarColor(Color(89,112,134));
+			Windower::Win.SetTitlebarColor(Color(89, 112, 134));
 		else
-			Windower::Win.SetTitlebarColor(Color(192,193,188));
+			Windower::Win.SetTitlebarColor(Color(192, 193, 188));
 		});
 	MM_t2.SetCallbackOnMousePress([](SuperMouse::Key, UIregion*) {
 		Game::type = Game::x16x16;
-		Canvas::SceneSettings("MainMenu");
+		Scene::CanvasSettings("MainMenu");
 
 		Windower::Win.SetSize({ 660,840 });
 		Windower::Win.Centering();
 
-		Canvas::SceneSettings("Game", true, true);
+		Scene::CanvasSettings("Game", true, true);
 		Settings::Where = WHERE::Game;
 		Game::Start();
 
@@ -1609,12 +1681,12 @@ void Init() {
 		});
 	MM_t3.SetCallbackOnMousePress([](SuperMouse::Key, UIregion*) {
 		Game::type = Game::x30x16;
-		Canvas::SceneSettings("MainMenu");
+		Scene::CanvasSettings("MainMenu");
 
 		Windower::Win.SetSize({ 1140,840 });
 		Windower::Win.Centering();
 
-		Canvas::SceneSettings("Game", true, true);
+		Scene::CanvasSettings("Game", true, true);
 		Settings::Where = WHERE::Game;
 		Game::Start();
 
@@ -1629,14 +1701,14 @@ void Init() {
 		});
 	MM_b2.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg) // settings
 		{
-			Canvas::SceneSettings("MainMenu");
-			Canvas::SceneSettings("Settings", true, true);
+			Scene::CanvasSettings("MainMenu");
+			Scene::CanvasSettings("Settings", true, true);
 			Settings::Where = WHERE::Settings;
 		});
 	MM_b1.SetCallbackOnMousePress([&](SuperMouse::Key, UIregion* reg) // stats
 		{
-			Canvas::SceneSettings("MainMenu");
-			Canvas::SceneSettings("Stats", true, true);
+			Scene::CanvasSettings("MainMenu");
+			Scene::CanvasSettings("Stats", true, true);
 			Settings::Where = WHERE::Stats;
 
 			Ss_b1.SetSelect(true);
@@ -1644,19 +1716,20 @@ void Init() {
 			Ss_t4.SetText(std::to_wstring(Settings::GetStat(Game::Type::x9x9).win));
 			Ss_t5.SetText(std::to_wstring(Settings::GetStat(Game::Type::x9x9).lose));
 			size_t t = Settings::GetStat(Game::Type::x9x9).time;
-			if(t == INT64_MAX)
+			if (t == INT64_MAX)
 				Ss_t6.SetText(L"N/A");
 			else {
-				Ss_t6.SetText(std::to_wstring(t/60) + L":" + std::to_wstring(t % 60));
+				Ss_t6.SetText(std::to_wstring(t / 60) + L":" + std::to_wstring(t % 60));
 			}
 		});
 	// lose
 	L_b1.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::DisableAll();
+			Scene::CanvasSettings("LoseGame");
+			Scene::CanvasSettings("Game");
 			Game::Close();
-			Canvas::SceneSettings("MainMenu", true, true);
-			
+			Scene::CanvasSettings("MainMenu", true, true);
+
 			Windower::Win.SetSize({ 800,800 });
 			Windower::Win.Centering();
 
@@ -1669,17 +1742,18 @@ void Init() {
 		});
 	L_b2.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::SceneSettings("LoseGame");
-			Canvas::SceneSettings("Game", true, true);
+			Scene::CanvasSettings("LoseGame");
+			Scene::CanvasSettings("Game", true, true);
 			Settings::Where = WHERE::Game;
 			Game::Restart();
 		});
 	// win
 	W_b1.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::DisableAll();
+			Scene::CanvasSettings("WinGame");
+			Scene::CanvasSettings("Game");
 			Game::Close();
-			Canvas::SceneSettings("MainMenu", true, true);
+			Scene::CanvasSettings("MainMenu", true, true);
 
 			Windower::Win.SetSize({ 800,800 });
 			Windower::Win.Centering();
@@ -1693,17 +1767,18 @@ void Init() {
 		});
 	W_b2.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::SceneSettings("WinGame");
-			Canvas::SceneSettings("Game", true, true);
+			Scene::CanvasSettings("WinGame");
+			Scene::CanvasSettings("Game", true, true);
 			Settings::Where = WHERE::Game;
 			Game::Restart();
 		});
 	// exit
 	E_b1.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::DisableAll();
+			Scene::CanvasSettings("Game");
+			Scene::CanvasSettings("Exit");
 			Game::Close();
-			Canvas::SceneSettings("MainMenu", true, true);
+			Scene::CanvasSettings("MainMenu", true, true);
 
 			Windower::Win.SetSize({ 800,800 });
 			Windower::Win.Centering();
@@ -1717,439 +1792,17 @@ void Init() {
 		});
 	E_b2.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::SceneSettings("Exit");
-			Canvas::SceneSettings("Game", true, true);
+			Scene::CanvasSettings("Exit");
+			Scene::CanvasSettings("Game", true, true);
 			Settings::Where = WHERE::Game;
-			//Game::UnPause();
 			Button* b = dynamic_cast<Button*>(reg);
 			b->SetBGColor(b->GetNormalColor());
 		});
 	E_b3.SetCallbackOnMousePress([](SuperMouse::Key, UIregion* reg)
 		{
-			Canvas::SceneSettings("Exit");
-			Canvas::SceneSettings("Game", true, true);
+			Scene::CanvasSettings("Exit");
+			Scene::CanvasSettings("Game", true, true);
 			Settings::Where = WHERE::Game;
 			Game::Restart();
 		});
 }
-int WinMain() {
-	sf::ContextSettings settings;
-	settings.antialiasingLevel = 8;
-	Settings::ReadSettings();
-	
-	sf::Image ico; ico.loadFromFile("Minesweeper.png");
-	Windower::Win.Create({800,800}, "Minesweeper", sf::Style::Close, settings);
-	if(Settings::GetTheme() == Themes::Dark)
-		Windower::Win.SetTitlebarColor(Color(125, 125, 125));
-	else
-		Windower::Win.SetTitlebarColor(Color::White);
-	Windower::Win.rw.setIcon(ico.getSize().x, ico.getSize().y, ico.getPixelsPtr());
-	Windower::Win.rw.setVerticalSyncEnabled(Settings::GetVSunc());
-	if(!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit());
-	Windower::Win.AddEventCallback(sf::Event::KeyPressed, __CloseWindow);
-	Windower::Win.AddEventCallback(sf::Event::Closed, __CloseWindow);
-	SuperMouse::initialize(&Windower::Win.rw);
-
-	const char* lib1{ "Memory.dll" };
-	_LoadLibrary(lib1);
-	SizeTFunc f4 = (SizeTFunc)_GetProcAddress(lib1, "GetMemory");
-
-	Init();
-	
-	////////////////////////////////////////////////////////
-	sf::Clock clk;
-	sf::Time elTime;
-	while (Windower::Win.rw.isOpen()) {
-		Windower::Win.rw.clear();
-		Windower::Win.CheckEvents();
-
-		// Update
-		SuperMouse::update();
-		Windower::Win.Update();
-		Game::Update(elTime.asSeconds()); 
-
-		// Draw
-		Canvas::Draw(Windower::Win.rw);
-		
-		Windower::Win.rw.display();
-
-		elTime = clk.getElapsedTime();
-		clk.restart();
-		FPS::Add(int(1./elTime.asSeconds()));
-	}
-	Windower::Win.rw.close();
-	return 0;
-}
-
-
-//
-//struct Editor : public UIrectangle {
-//	Editor(Vector2 const& pos, Vector2 const& size, Color const& col) {
-//		SetGlobalPosition(pos);
-//		SetSizeAcrossPos(size);
-//		SetBGColor(col);
-//
-//		ddl_regions = new UIdropDownList({ 0,0 }, { 150, 30 }, col >> 1);
-//		ddl_regions->SetParent(this);
-//		ddl_regions->SetLocalPosition({ 180,20 });
-//
-//		ddl_scenes = new UIdropDownList({ 0,0 }, { 150, 30 }, col >> 2);
-//		ddl_scenes->SetParent(this);
-//		ddl_scenes->SetLocalPosition({ 20,20 });
-//
-//		ddl_regions->SetCallbackOnDDLSelected([&](UItext* t) {ReSelectRegion(t->GetText()); });
-//		ddl_scenes->SetCallbackOnDDLSelected([&](UItext* t) {ReSelectScene(t->GetText()); });
-//
-//		int cnt{ 0 };
-//		for (auto lay : Canvas::layers) {
-//			std::wstring ws(lay.begin(), lay.end());
-//			ddl_scenes->Set(cnt, ws);
-//			cnt++;
-//		}
-//		ddl_scenes->Select(0);
-//
-//	}
-//	void Update() {
-//
-//		//if (err.m_region && err.m_region->GetType() == "Button")
-//		if(err.m_region)
-//			UpdateRegionsForUIbutton();
-//
-//		ClickUpdate();
-//		UIrectangle::Update();
-//		ddl_regions->Update();
-//		ddl_scenes->Update();
-//		err.Update();
-//
-//		for (auto i : regs) {
-//			i->Update();
-//		}
-//	}
-//	void Draw(sf::RenderWindow& rw) {
-//		UIrectangle::Draw(rw);
-//
-//		for (auto i : regs) {
-//			i->Draw(rw);
-//		}
-//
-//		ddl_regions->Draw(rw);
-//		ddl_scenes->Draw(rw);
-//		err.Draw(rw);
-//	}
-//	std::string GetType() {
-//		return "Editor";
-//	}
-//private:
-//	void ClickUpdate() {
-//		bool dont_handle_clicks{ false };
-//		dont_handle_clicks |= (ddl_scenes->ClickUpdate(dont_handle_clicks));
-//		dont_handle_clicks |= (ddl_scenes->ClickUpd(dont_handle_clicks));
-//		dont_handle_clicks |= (ddl_regions->ClickUpdate(dont_handle_clicks));
-//		dont_handle_clicks |= (ddl_regions->ClickUpd(dont_handle_clicks));
-//
-//		for (auto i : regs) {
-//			dont_handle_clicks |= i->ClickUpdate(dont_handle_clicks);
-//		}
-//
-//	}
-//	void ReSelectRegion(std::wstring ws) {
-//		for (auto i : regs) {
-//			delete i;
-//		}
-//		regs.clear();
-//
-//		std::string s(ws.begin(), ws.end());  
-//		err.Set(UIregion::FindByName(s)); 
-//
-//		//if(UIregion::FindByName(s)->GetType() == "Button")
-//		CreateRegionsForUIbutton();
-//	}
-//	void UpdateRegionsForUIbutton() {
-//		static_cast<UItextInput*>(regs[0])->SetText(std::to_wstring(err.m_region->GetLeft()));
-//		static_cast<UItextInput*>(regs[1])->SetText(std::to_wstring(err.m_region->GetUp()));
-//	}
-//	void CreateRegionsForUIbutton() {
-//		UItext* text1 = new UItext;	 // Name		   // string
-//		UItext* text2 = new UItext;	 // Pos X		   // float
-//		UItext* text3 = new UItext;	 // Pos Y		   // float
-//		UItext* text4 = new UItext;	 // Width		   // float
-//		UItext* text5 = new UItext;	 // Height		   // float
-//		UItext* text6 = new UItext;	 // BG color	   // color
-//		UItext* text7 = new UItext;	 // Frame color	   // color
-//		UItext* text8 = new UItext;	 // Frame thikness // float
-//		UItext* text9 = new UItext;	 // Visible		   // bool
-//
-//		UItextInput* text_input1 = new UItextInput;	   // string
-//		UItextInput* text_input2 = new UItextInput;	   // float
-//		UItextInput* text_input3 = new UItextInput;	   // float
-//		UItextInput* text_input4 = new UItextInput;	   // float
-//		UItextInput* text_input5 = new UItextInput;	   // float
-//		UItextInput* text_input6 = new UItextInput;	   // color
-//		UItextInput* text_input7 = new UItextInput;	   // color
-//		UItextInput* text_input8 = new UItextInput;	   // float
-//		Button*    text_input9 = new Button;	   // bool
-//
-//		// Paranting
-//		text1->SetParent(this);
-//		text2->SetParent(this);
-//		text3->SetParent(this);
-//		text4->SetParent(this);
-//		text5->SetParent(this);
-//		text6->SetParent(this);
-//		text7->SetParent(this);
-//		text8->SetParent(this);
-//		text9->SetParent(this);
-//
-//		text_input1->SetParent(this);
-//		text_input2->SetParent(this);
-//		text_input3->SetParent(this);
-//		text_input4->SetParent(this);
-//		text_input5->SetParent(this);
-//		text_input6->SetParent(this);
-//		text_input7->SetParent(this);
-//		text_input8->SetParent(this);
-//		text_input9->SetParent(this);
-//
-//
-//		// Positing
-//		text1->SetLocalPosition({20,80 });
-//		text2->SetLocalPosition({20,120}); 
-//		text3->SetLocalPosition({20,160});
-//		text4->SetLocalPosition({20,200});
-//		text5->SetLocalPosition({20,240});
-//		text6->SetLocalPosition({20,280});
-//		text7->SetLocalPosition({20,320});
-//		text8->SetLocalPosition({20,360});
-//		text9->SetLocalPosition({20,400});
-//
-//		text_input1->SetLocalPosition({ 150,80  });
-//		text_input2->SetLocalPosition({ 150,120 });
-//		text_input3->SetLocalPosition({ 150,160 });
-//		text_input4->SetLocalPosition({ 150,200 });
-//		text_input5->SetLocalPosition({ 150,240 });
-//		text_input6->SetLocalPosition({ 150,280 });
-//		text_input7->SetLocalPosition({ 150,320 });
-//		text_input8->SetLocalPosition({ 150,360 });
-//		text_input9->SetLocalPosition({ 150,400 });
-//
-//		// Resizing
-//		text1->SetSizeAcrossPos({120,30});
-//		text2->SetSizeAcrossPos({120,30});
-//		text3->SetSizeAcrossPos({120,30});
-//		text4->SetSizeAcrossPos({120,30});
-//		text5->SetSizeAcrossPos({120,30});
-//		text6->SetSizeAcrossPos({120,30});
-//		text7->SetSizeAcrossPos({120,30});
-//		text8->SetSizeAcrossPos({120,30});
-//		text9->SetSizeAcrossPos({120,30});
-//
-//		text_input1->SetSizeAcrossPos({180,30});
-//		text_input2->SetSizeAcrossPos({180,30});
-//		text_input3->SetSizeAcrossPos({180,30});
-//		text_input4->SetSizeAcrossPos({180,30});
-//		text_input5->SetSizeAcrossPos({180,30});
-//		text_input6->SetSizeAcrossPos({180,30});
-//		text_input7->SetSizeAcrossPos({180,30});
-//		text_input8->SetSizeAcrossPos({180,30});
-//		text_input9->SetSizeAcrossPos({180,30});
-//
-//		// Naming
-//		text1->SetText(L"Name");
-//		text2->SetText(L"Pos X");
-//		text3->SetText(L"Pos Y");
-//		text4->SetText(L"Width");
-//		text5->SetText(L"Height");
-//		text6->SetText(L"BG color");
-//		text7->SetText(L"Frame color");
-//		text8->SetText(L"Thikness");
-//		text9->SetText(L"Visible");
-//
-//		// Text settings
-//		text1->SetCharacterSize(24);
-//		text2->SetCharacterSize(24);
-//		text3->SetCharacterSize(24);
-//		text4->SetCharacterSize(24);
-//		text5->SetCharacterSize(24);
-//		text6->SetCharacterSize(24);
-//		text7->SetCharacterSize(24);
-//		text8->SetCharacterSize(24);
-//		text9->SetCharacterSize(24);
-//
-//		text1->SetAlignment(AlignmentHorizontal::Left);
-//		text2->SetAlignment(AlignmentHorizontal::Left);
-//		text3->SetAlignment(AlignmentHorizontal::Left);
-//		text4->SetAlignment(AlignmentHorizontal::Left);
-//		text5->SetAlignment(AlignmentHorizontal::Left);
-//		text6->SetAlignment(AlignmentHorizontal::Left);
-//		text7->SetAlignment(AlignmentHorizontal::Left);
-//		text8->SetAlignment(AlignmentHorizontal::Left);
-//		text9->SetAlignment(AlignmentHorizontal::Left);
-//
-//		text_input1->SetCharacterSize(24);
-//		text_input2->SetCharacterSize(24);
-//		text_input3->SetCharacterSize(24);
-//		text_input4->SetCharacterSize(24);
-//		text_input5->SetCharacterSize(24);
-//		text_input6->SetCharacterSize(24);
-//		text_input7->SetCharacterSize(24);
-//		text_input8->SetCharacterSize(24);
-//
-//		text_input1->SetAlignment(AlignmentHorizontal::Left);
-//		text_input2->SetAlignment(AlignmentHorizontal::Left);
-//		text_input3->SetAlignment(AlignmentHorizontal::Left);
-//		text_input4->SetAlignment(AlignmentHorizontal::Left);
-//		text_input5->SetAlignment(AlignmentHorizontal::Left);
-//		text_input6->SetAlignment(AlignmentHorizontal::Left);
-//		text_input7->SetAlignment(AlignmentHorizontal::Left);
-//		text_input8->SetAlignment(AlignmentHorizontal::Left);
-//
-//
-//		// Registrings
-//		regs.push_back(text_input1);
-//		regs.push_back(text_input2);
-//		regs.push_back(text_input3);
-//		regs.push_back(text_input4);
-//		regs.push_back(text_input5);
-//		regs.push_back(text_input6);
-//		regs.push_back(text_input7);
-//		regs.push_back(text_input8);
-//		regs.push_back(text_input9);
-//		regs.push_back(text1);
-//		regs.push_back(text2);
-//		regs.push_back(text3);
-//		regs.push_back(text4);
-//		regs.push_back(text5);
-//		regs.push_back(text6);
-//		regs.push_back(text7);
-//		regs.push_back(text8);
-//		regs.push_back(text9);
-//
-//		//{
-//		//	UItextInput* tx = new UItextInput;
-//		//	tx->SetParent(this);
-//		//	tx->SetLocalPosition({ 20,80 });
-//		//	tx->SetSizeAcrossPos({ 150, 30 });
-//		//	tx->SetBGColor(Color(100, 100, 100, 100));
-//		//	tx->SetCallbackOnTextUpdated([&]()
-//		//		{
-//		//			try {
-//		//				err.m_region->SetLeftBorder(std::stof(static_cast<UItextInput*>(regs[0])->GetText()));
-//		//			}
-//		//			catch (std::exception e) {
-//		//				std::cout << e.what() << '\n';
-//		//			}
-//		//		});
-//		//	regs.push_back(tx);
-//		//}
-//		//{
-//		//	UItextInput* tx = new UItextInput;
-//		//	tx->SetParent(this);
-//		//	tx->SetLocalPosition({ 180,80 });
-//		//	tx->SetSizeAcrossPos({ 150, 30 });
-//		//	tx->SetBGColor(Color(100, 100, 100, 100));
-//		//	tx->SetCallbackOnTextUpdated([&]()
-//		//		{
-//		//			try {
-//		//				err.m_region->SetUpBorder(std::stof(static_cast<UItextInput*>(regs[1])->GetText()));
-//		//			}
-//		//			catch (std::exception e) {
-//		//				std::cout << e.what() << '\n';
-//		//			}
-//		//		});
-//		//	regs.push_back(tx);
-//		//}
-//	}
-//
-//	void ReSelectScene(std::wstring ws) {
-//		for (auto i : regs) {
-//			delete i;
-//		}
-//		regs.clear();
-//
-//		err.Set(nullptr);
-//		ddl_regions->Clear();
-//		std::string s(ws.begin(), ws.end());
-//		Canvas::DisableAll();
-//		Canvas::SceneSettings(s, true);
-//		int cnt{ 0 };
-//		for (auto i : Canvas::scenes[s].regions) {
-//			std::string ss = i->GetName();
-//			std::wstring ww(ss.begin(), ss.end());
-//			ddl_regions->Set(cnt, ww);
-//			cnt++;
-//		}
-//	}
-//
-//private:
-//	UIdropDownList* ddl_regions,* ddl_scenes;
-//	UIeditorRegionRect err;
-//	std::vector<UIregion*> regs;
-//};
-//
-///*
-//TODO:
-//
-//	InputInt
-//	InputBool
-//	InputFloat
-//	InputString
-//	DropDownList
-//	Color
-//	Vector
-//
-//	setcallbackSetter
-//	setcalbackGetter
-//
-//*/
-//
-//#include "UI/UIeditorRegion.hpp"
-//int MainEditor() {
-//	//Settings::ReadSettings();
-//	//Settings __set;
-//	sf::ContextSettings settings;
-//	settings.antialiasingLevel = 8;
-//
-//	//Windower::Win.Create(__set["WindowSizeX"]+400, __set["WindowSizeY"], "Visual controller", sf::Style::Close, settings);
-//	//Windower::Win.rw.setVerticalSyncEnabled(__set["VerticalSync"]);
-//	//Windower::Win.rw.setFramerateLimit(__set["FramerateLimit"]);
-//	Windower::Win.rw.setActive(true);
-//	SuperMouse::initialize(&Windower::Win.rw);
-//	Windower::Win.AddEventCallback(sf::Event::Closed, __CloseWindow);
-//	Windower::Win.AddEventCallback(sf::Event::KeyPressed, __CloseWindow);
-//
-//	Settings::WinSize = Windower::Win.GetSize();
-//	Settings::Center = Settings::WinSize / 2;
-//	Canvas::SceneSettings("MainMenu", true);
-//
-//	
-//	//Editor ed({ __set["WindowSizeX"], 0 }, { 400, __set["WindowSizeY"] }, Color(192, 168, 56));
-//
-//
-//	sf::Clock clk;
-//	sf::Time elTime;
-//	while (Windower::Win.rw.isOpen()) {
-//		Windower::Win.rw.clear({ 101, 165, 186 });
-//		Windower::Win.CheckEvents();
-//		SuperMouse::update();
-//		//ed.Update();
-//
-//		Canvas::Draw(Windower::Win.rw);
-//		//ed.Draw(Windower::Win.rw);
-//		Windower::Win.rw.display();
-//
-//		elTime = clk.getElapsedTime();
-//		clk.restart();
-//		FPS::Add(int(1. / elTime.asSeconds()));
-//	}
-//	Windower::Win.rw.close();
-//
-//	return 0;
-//}
-
-//int main() {
-//#ifdef GAME
-//	MainGame();
-//#else
-//	MainEditor();
-//#endif
-//}

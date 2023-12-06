@@ -1,23 +1,23 @@
 {
     "EasyDigging": true,
-    "EasyFlagging": true,
-    "FPS_limit": 90,
+    "EasyFlagging": false,
+    "FPS_limit": 70,
     "LeftClickFlag": false,
     "Theme": 1,
-    "VSunc": true,
+    "VSunc": false,
     "_16x16": {
-        "lose": 1,
+        "lose": 8,
         "time": 9223372036854775807,
         "win": 0
     },
     "_30x16": {
-        "lose": 1,
+        "lose": 8,
         "time": 9223372036854775807,
         "win": 0
     },
     "_9x9": {
-        "lose": 4,
-        "time": 18,
-        "win": 1
+        "lose": 17,
+        "time": 11,
+        "win": 8
     }
 }

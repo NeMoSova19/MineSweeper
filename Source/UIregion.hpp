@@ -1,70 +1,9 @@
  #pragma once
 #include <SFML/Graphics/Texture.hpp>
-#include "../StandartTypes.hpp"
+#include "StandartTypes.hpp"
 #include <functional>
 #include <map>
-#include "../SuperMouse.hpp"
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
-
-struct BindPoint {
-	enum BindType :uint8_t { SpringSide, MoveSide }; // пружина (весь прямоугольник) / только грань
-
-	BindPoint& Pos(const Vector2* p) {
-		pos = p;
-		return *this;
-	}
-	BindPoint& Delta(const Vector2* d) {
-		size = d;
-		return *this;
-	}
-	BindPoint& Type(BindType t) {
-		bindType = t;
-		return *this;
-	}
-	BindPoint& Rigidity(uint32_t r) {
-		springRigid = r;
-		return *this;
-	}
-
-	void operator = (BindPoint& bp) {
-		pos = bp.pos;
-		size = bp.size;
-		bindType = bp.bindType;
-		springRigid = bp.springRigid;
-	}
-
-	bool IsExist() {
-		return !!pos;
-	}
-
-	Vector2 GetPoint() {
-		if (!pos) return Vector2();
-		Vector2 p = *pos;
-		if (size) p += *size;
-		return p;
-	}
-	BindType GetType() const {
-		return bindType;
-	}
-	uint32_t GetSpringRigid() const {
-		return springRigid;
-	}
-	void Reset() {
-		pos = nullptr;
-		size = nullptr;
-		springRigid = 0;
-	}
-
-private:
-	const Vector2* pos{ nullptr };
-	const Vector2* size{ nullptr };
-	BindType bindType{ MoveSide };
-	uint32_t springRigid{ 0 };
-};
-
-struct UIregion;
+#include "SuperMouse.hpp"
 
 class Point {
 public:
@@ -137,13 +76,6 @@ struct Rect : public Point{
 	Rect& SetRightBorder(float delta);
 	Rect& SetUpBorder(float delta);
 	Rect& SetDownBorder(float delta);
-
-	//void MoveLeftBorder(float delta);
-	//void MoveRightBorder(float delta);
-	//void MoveUpBorder(float delta);
-	//void MoveDownBorder(float delta);
-
-	//const Vector2*	GetSizePtr() const;
 	float		  GetUp()     const;
 	Vector2		  GetSize()   const;
 	float		  GetLeft()   const;
@@ -157,8 +89,6 @@ struct Rect : public Point{
 	virtual bool  Contains(Vector2 const& p);
 	static bool   AABBContains(Vector2 const& lu, Vector2 const& size, Vector2 const& p);
 	bool		  AABBContains(Vector2 const& p);
-	bool		  AABBIntersect(UIregion const& aabb);
-	Vector2		  AABBrelativelyLine(Vector2 const& start, Vector2 const& dir);
 
 	enum class EditState :uint8_t
 	{
@@ -167,7 +97,7 @@ struct Rect : public Point{
 		Move = 0b10,
 		Edit = Resize | Move,
 	};
-	virtual void OnEditable() { std::cout << "UIregion Update\n"; }
+	virtual void OnEditable() { }
 
 protected:
 	RectType m_RectType{ RectType::Rect };
@@ -198,6 +128,7 @@ public:
 	sf::Texture& GetBGTexture() const;
 
 	virtual void Draw(sf::RenderWindow& rw);
+	static inline bool NeedDraw{ false };
 	void OnEditable() override { DrawUpdate(); }
 	void DrawUpdate();
 	
@@ -228,12 +159,6 @@ struct UIregion : public Drawable {
 	UIregion&		SetName(std::string name);
 	UIregion&		SetActive(bool active);
 
-	UIregion& SetBindLeftBorder(BindPoint bp);
-	UIregion& SetBindRightBorder(BindPoint bp);
-	UIregion& SetBindUpBorder(BindPoint bp);
-	UIregion& SetBindDownBorder(BindPoint bp);
-	UIregion& ResetBind(uint8_t p);
-
 	UIregion& SetCallbackOnMouseGrab(std::function<void(SuperMouse::Key, UIregion*)> f);
 	UIregion& SetCallbackOnMousePress(std::function<void(SuperMouse::Key, UIregion*)> f);
 	UIregion& SetCallbackOnMouseRelease(std::function<void(SuperMouse::Key, UIregion*)> f);
@@ -245,13 +170,7 @@ struct UIregion : public Drawable {
 
 	// Virtual
 	virtual void	Update();
-	virtual std::string GetType() { return "UIregion"; };
 	bool			ClickUpdate(bool dont_handle_clicks = false);
-	
-	// Json
-	virtual json GetJson();
-	virtual void SetJson(json);
-	virtual void PostSetJson(json);
 
 	// Static
 	template<class T = UIregion> 
@@ -261,13 +180,9 @@ struct UIregion : public Drawable {
 		return dynamic_cast<T*>(m_UIregions[name]);
 	}
 
-	// Enums
-	
-
 private:
 	std::string Name;
 	bool m_isActive{ true };
-	BindPoint m_bindPoint[4]; // L U R D
 	Vector2 M_position, M_size; // сохраненные предыдущие позиция и размер
 	
 	// Static
@@ -298,7 +213,7 @@ protected:
 	virtual void OnMouseRelease(SuperMouse::Key) { }	  // 
 	virtual void OnMouseHold(SuperMouse::Key) { }		  // сделать таймер в SuperMouse  // или пока не делать)
 	virtual void OnMouseGrab(SuperMouse::Key) { }		  // когда hold без таймера		  // 
+	virtual void OnMousePressOut(SuperMouse::Key) {}
 	virtual void OnMouseEnter() { }		  
 	virtual void OnMouseExit() { }		  
-	virtual void OnMousePressOut() {}
 };

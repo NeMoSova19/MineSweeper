@@ -1,6 +1,6 @@
 #include "Text.hpp"
-#include "../ResourceManager.hpp"
-#include "../Windower.hpp"
+#include "ResourceManager.hpp"
+#include "Windower.hpp"
 
 #pragma warning (disable: 6295) // неверно определенный цикл for. Цикл выполняется бесконечно
 #pragma warning (disable: 6001) // использование неинициальзированной памяти
@@ -192,61 +192,6 @@ EndLastWrap UItext::GetEndLastWrap()
 	return m_endLastWrap;
 }
 
-std::string UItext::GetType()
-{
-	return "UItext";
-}
-
-json UItext::GetJson()
-{
-	json js = UIregion::GetJson();
-	js["type"] = "UItext";
-	js["string"] = m_string;
-
-	js["style"] = GetStyle();
-	Color c = GetTextFillColor();
-	js["TextFillColor"][0] = c.r;
-	js["TextFillColor"][1] = c.g;
-	js["TextFillColor"][2] = c.b;
-	js["TextFillColor"][3] = c.a;
-
-	c = GetTextOutlineColor();
-	js["TextOutlineColor"][0] = c.r;
-	js["TextOutlineColor"][1] = c.g;
-	js["TextOutlineColor"][2] = c.b;
-	js["TextOutlineColor"][3] = c.a;
-
-	js["OutlineThickness"] = GetOutlineThickness();
-	js["Font"] = GetFont();
-	js["CharacterSize"] = GetCharacterSize();
-	js["AlignmentH"] = (int)getAlignmentH();
-	js["AlignmentV"] = (int)getAlignmentV();
-	js["TextRectType"] = (int)GetTextRectType();
-	js["EndLastWrap"] = (int)GetEndLastWrap();
-	
-	return js;
-}
-
-void UItext::SetJson(json js)
-{
-	UIregion::SetJson(js);
-	std::wstring ws;
-	for (int i : js["string"]) {
-		ws += (wchar_t)i;
-	}
-	SetText(ws);
-
-	SetStyle(js["style"]);
-	SetTextFillColor({ js["TextFillColor"][0],js["TextFillColor"][1],js["TextFillColor"][2],js["TextFillColor"][3] });
-	SetTextOutlineColor({ js["TextOutlineColor"][0],js["TextOutlineColor"][1],js["TextOutlineColor"][2],js["TextOutlineColor"][3] });
-	SetOutlineThickness(js["OutlineThickness"]);
-	SetFont(js["Font"]);
-	SetCharacterSize(js["CharacterSize"]);
-	SetAlignment((AlignmentHorizontal)js["AlignmentH"]);
-	SetAlignment((AlignmentVertical)js["AlignmentV"]);
-	SetTextRectType(js["TextRectType"]);
-	SetEndLastWrap(js["EndLastWrap"]);
-}
 
 void UItext::RestructText_InOneLine() {
 	m_restructString = m_string;
@@ -428,12 +373,7 @@ void UItext::RestructText_Bounded() {
 			sizes.emplace_back(_aabb.width, _aabb.height);
 		}
 
-		bool* wraps = new bool[split_text.size()]; // какое слово переносим
-		// определять не только какое слово переносить, но и сколько строк влезет в rect
-		// центровка по верх/середина/низ только для первой строки
-		// первая строка точно есть
-		// если слова не влязиют по строкам, то в конце строки троеточие
-		// выравнивать по центру строки которые влазиют в rect!
+		bool* wraps = new bool[split_text.size()]; 
 		float counter = 0;
 		float total_height = 0, now_height = 0;
 
@@ -511,50 +451,6 @@ void UItext::RestructText_Bounded() {
 		}
 	}
 }
-
-
-//void UItext::Update_letters() {
-//	auto texture = m_text.getFont();
-//	for (char c = 0; c < 127; c++)
-//	{
-//		auto t = texture->getGlyph(c, m_text.getCharacterSize(), m_text.getStyle() & sf::Text::Style::Bold, m_text.getOutlineThickness());
-//		m_lettersSize[c] = { t.bounds.width + t.bounds.left, t.bounds.height + t.bounds.top };
-//	}
-//}
-//Vector2 UItext::GetLineSize(std::string l) { // линия - без переносов
-//	sf::Text _T = m_text;
-//	_T.setString(l);
-//	auto _aabb = _T.getLocalBounds();
-//	return { _aabb.width, _aabb.height };
-//
-//	Vector2 total;
-//	for (auto u : l) {
-//		total.x += m_lettersSize[u].x;
-//		total.y = std::max(total.y, m_lettersSize[u].y);
-//	}
-//	return total;
-//}
-//Vector2 UItext::GetStringSize(std::string s) { // любая строка
-//	sf::Text _T = m_text;
-//	_T.setString(s);
-//	auto _aabb = _T.getLocalBounds();
-//	return { _aabb.width, _aabb.height };
-//
-//	Vector2 total; std::string line;
-//	for (auto u : s) {
-//		if (u == '\n') {
-//			auto gls = GetLineSize(line);
-//			line = "";
-//			total.x = std::max(total.x, gls.x);
-//			total.y += gls.y;
-//			continue;
-//		}
-//
-//		line += u;
-//	}
-//	return total;
-//}
-
 	
 TextInput::TextInput(std::wstring text)
 {
@@ -567,6 +463,12 @@ TextInput::TextInput(std::wstring text)
 void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 	if (m_selected) {
 		if (e.key.code == sf::Keyboard::Enter) {
+			m_selected = false;
+			CallbackOnTextEnter();
+			CallbackOnTextOffFocus();
+			return;
+		}
+		if (e.key.code == sf::Keyboard::Escape) {
 			m_selected = false;
 			CallbackOnTextEnter();
 			CallbackOnTextOffFocus();
@@ -618,6 +520,20 @@ void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 			}
 			return;
 		}
+
+		auto is_digit = [](sf::Keyboard::Key k)->bool { return k >= 26 && k <= 35; };
+
+		switch (text_content)
+		{
+		case TextContent::digits:
+			m_canInput = is_digit(e.key.code);
+			break;
+		case TextContent::letters:
+			m_canInput = !is_digit(e.key.code);
+			break;
+		case TextContent::all:
+			return;
+		}
 	}
 
 }
@@ -655,8 +571,12 @@ void TextInput::Update() {
 
 void TextInput::Draw(sf::RenderWindow& rw) {
 	UItext::Draw(rw);
-	//PrimitiveDrawer::DrawText(&rw, GetPosition() - zero, m_text);
-	//rw.draw(m_text);
+}
+
+TextInput& TextInput::SetTextContent(TextContent tc)
+{
+	text_content = tc;
+	return *this;
 }
 
 
@@ -665,7 +585,7 @@ void TextInput::OnMousePress(SuperMouse::Key key) {
 		m_selected = true;
 		CallbackOnTextOnFocus();
 	}
-	int new_pos = static_cast<int>((SuperMouse::map_pose.x - GetLeft()) / 13);
+	int new_pos = static_cast<int>((SuperMouse::map_pose.x - GetLeft()) / (m_text.getLocalBounds().width/m_string.size()));
 	if (new_pos < 0) new_pos = 0;
 	else if (new_pos > m_string.size()) new_pos = (int)m_string.size();
 	cursor = new_pos;
@@ -673,7 +593,7 @@ void TextInput::OnMousePress(SuperMouse::Key key) {
 	m_blink = true;
 }
 
-void TextInput::OnMousePressOut() {
+void TextInput::OnMousePressOut(SuperMouse::Key) {
 	if (m_selected) {
 		m_selected = false;
 	}

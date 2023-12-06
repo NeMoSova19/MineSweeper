@@ -9,15 +9,13 @@ Button::Button() {
 	Clicable(true);
 	SetTexture("Textures/ButtonStandart.png");
 }
+
 Button::~Button() {
 	delete text;
 }
 
 void Button::OnEditable() {
 	UIregion::OnEditable();
-	//if (m_editState != EditState::Move) {
-	//	text->SetSizeAcrossPos(GetSize());
-	//}
 }
 
 void Button::OnMousePress(SuperMouse::Key key) {
@@ -56,28 +54,6 @@ void Button::Update()
 {
 	UIregion::Update();
 	text->Update();	
-}
-
-json Button::GetJson()
-{
-	json js = UIregion::GetJson();
-	js["type"] = "UIButton";
-	js["text"] = text->GetName();
-	js["connected"] = json::array();
-	return js;
-}
-
-void Button::SetJson(json js)
-{
-	UIregion::SetJson(js);
-}
-
-void Button::PostSetJson(json js)
-{
-	UIregion::PostSetJson(js);
-	std::string s = js["text"];
-
-	text = UIregion::FindByName<UItext>(s);
 }
 
 Button& Button::SetNormalColor(Color c)

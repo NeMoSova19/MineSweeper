@@ -1,9 +1,9 @@
 #pragma once
-#include "../StandartTypes.hpp"
+#include "StandartTypes.hpp"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "UIregion.hpp"
-#include "../SuperMouse.hpp"
+#include "SuperMouse.hpp"
 #include "UIenum.hpp"
 
 enum class UItextStyle : uint8_t
@@ -49,12 +49,6 @@ struct UItext : public UIregion {
 	AlignmentVertical   getAlignmentV();
 	TextRectType		GetTextRectType();
 	EndLastWrap			GetEndLastWrap();
-	std::string			GetType();
-
-
-	// Json
-	json GetJson() override;
-	void SetJson(json) override;
 
 protected:
 	// Значимые поля
@@ -85,6 +79,12 @@ private:
 	void RestructText_Bounded();
 };
 
+enum class TextContent {
+	digits,
+	letters,
+	all
+};
+
 struct TextInput : public UItext
 {
 	TextInput(TextInput&&) = delete;
@@ -99,8 +99,10 @@ struct TextInput : public UItext
 
 	void Draw(sf::RenderWindow& rw) override;
 
+	TextInput& SetTextContent(TextContent tc);
+
 	void OnMousePress(SuperMouse::Key key) override;
-	void OnMousePressOut() override;
+	void OnMousePressOut(SuperMouse::Key) override;
 
 	void SetCallbackOnTextUpdated(std::function<void()> f);
 	void SetCallbackOnTextEnter(std::function<void()> f);
@@ -110,6 +112,7 @@ struct TextInput : public UItext
 private:
 	bool m_selected{ false }, m_blink{ true }, m_canInput{ true };
 	int counter{ 0 }, cursor{ 0 };
+	TextContent text_content{ TextContent::all };
 	std::function<void()> CallbackOnTextUpdated{ []() {} };
 	std::function<void()> CallbackOnTextEnter{ []() {} };
 	std::function<void()> CallbackOnTextOnFocus{ []() {} };

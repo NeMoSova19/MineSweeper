@@ -5,13 +5,13 @@
 #include <map>
 #include <vector>
 #include <functional>
-#include "UI/UIregion.hpp"
+#include "UIregion.hpp"
 
 struct Windower;
 
 struct Windower : public UIregion {
 	Windower() = default;
-	void Create(Vector2 size, std::string name, uint8_t style, sf::ContextSettings settings);
+	void Create(Vector2 size, std::string name, uint8_t style = sf::Style::Default, sf::ContextSettings settings = sf::ContextSettings());
 	void SetTitlebarColor(Color c);
 
 	void SetSize(Vector2 s);

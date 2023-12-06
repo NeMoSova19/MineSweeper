@@ -28,7 +28,7 @@ struct Settings abstract {
 	static void SetLeftClickFlag(bool b);
 	static void SetEasyDigging(bool b);
 	static void SetEasyFlagging(bool b);
-	static void SetFPS_limit(uint8_t u);
+	static void SetFPS_limit(uint16_t u);
 	static void SetVSunc(bool b);
 	static void SetTheme(Themes t);
 	static void SetStat(Stat s, Game::Type type);
@@ -37,7 +37,7 @@ struct Settings abstract {
 	static bool    GetLeftClickFlag();
 	static bool    GetEasyDigging();
 	static bool    GetEasyFlagging();
-	static uint8_t GetFPS_limit();
+	static uint16_t GetFPS_limit();
 	static bool    GetVSunc();
 	static Themes  GetTheme();
 	static Stat	   GetStat(Game::Type type);
@@ -45,7 +45,7 @@ struct Settings abstract {
 	static inline WHERE   Where{ WHERE::MainMenu };
 
 private:
-	static inline uint8_t FPS_limit{ 60 };
+	static inline uint16_t FPS_limit{ 60 };
 	static inline bool    VSunc{ false };
 	static inline Themes  Theme{ Themes::Light };
 	static inline bool    LeftClickFlag{ false };
