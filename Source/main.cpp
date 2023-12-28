@@ -49,7 +49,7 @@ void __CloseWindow(sf::Event const e) {
 
 void Init();
 
-int main() {
+int WinMain() {
 	Settings::ReadSettings();
 	
 	sf::Image ico; ico.loadFromFile("Minesweeper.png");
