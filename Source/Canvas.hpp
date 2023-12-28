@@ -5,15 +5,11 @@
 #include"UIregion.hpp"
 
 
-/// Scene
-/// *-Canvas1
-/// *-Canvas2
 struct Scene {
 	struct Canvas {
 		std::vector<UIregion*> regions;
 		bool isVisible : 1 { false };
 		bool isUpdatable : 1 { false };
-		bool AlwaysVisible : 1 {false};
 	};
 
 	static void CreateCanvas(std::string name);
@@ -21,9 +17,9 @@ struct Scene {
 		scenes[name].regions.push_back(what);
 		return *what;
 	}
-	static void CanvasSettings(std::string name, bool visible = false, bool updatable = false, bool always_visible = false);
+	static void CanvasSettings(std::string name, bool visible = false, bool updatable = false);
 	static void Update();
-	static void Draw(sf::RenderWindow& rw);
+	static void Draw();
 	static void Clear(std::string name);
 
 	static inline std::vector<std::string> layers;

@@ -1,9 +1,10 @@
- #pragma once
-#include <SFML/Graphics/Texture.hpp>
-#include "StandartTypes.hpp"
+#pragma once
+#include <SFML/Graphics.hpp>
 #include <functional>
 #include <map>
 #include "SuperMouse.hpp"
+#include "Vector2.hpp"
+#include "Color.hpp"
 
 class Point {
 public:
@@ -15,21 +16,21 @@ public:
 	virtual ~Point();
 	
 	// Set
-	Point& SetParent(Point* ptr);
-	Point& SetLocalPosition(Vector2 const& p);
-	Point& SetGlobalPosition(Vector2 const& p);
 	Point& SetPosition(Vector2 const& p, Type t);
-	Point& SetLocalX(float x);
-	Point& SetLocalY(float y);
+	Point& SetGlobalPosition(Vector2 const& p);
+	Point& SetLocalPosition(Vector2 const& p);
 	Point& SetGlobalX(float x);
 	Point& SetGlobalY(float y);
+	Point& SetLocalX(float x);
+	Point& SetLocalY(float y);
+	Point& SetParent(Point* ptr);
 
 	// Get
-	Point*				GetParent();
-	std::vector<Point*>&GetChildrens();
-	Vector2				GetLocalPosition() const;
-	Vector2				GetGlobalPosition() const;
-	Vector2				GetPosition(Type t) const;
+	Vector2				 GetPosition(Type t) const;
+	Vector2				 GetGlobalPosition() const;
+	Vector2				 GetLocalPosition() const;
+	std::vector<Point*>& GetChildrens();
+	Point*				 GetParent();
 	
 	// Other
 	void UnParent();
@@ -48,34 +49,19 @@ private:
 	void RecursiveUpdatePositionForChildrens();
 };
 
-enum class RectType {
-	Rect,
-	Circle
-};
 
 struct Rect : public Point{
 	Rect() = default;
 	Rect(float x, float y, float w, float h);
 	virtual ~Rect() = default;
 
-	Rect& SetRectType(RectType rt);
 	Rect& SetCenter(Vector2 const& center);
 	Rect& SetSizeAcrossPos(Vector2 const& size);
 	Rect& SetSizeAcrossCenter(Vector2 const& size);
 	
-	Rect& SetRadius(float r);
 	Rect& SetWidth(float width);
 	Rect& SetHeight(float height);
-	
-	Rect& SetLeftUp(Vector2 const& pos);
-	Rect& SetRightUp(Vector2 const& pos);
-	Rect& SetRightDown(Vector2 const& pos);
-	Rect& SetLeftDown(Vector2 const& pos);
-	
-	Rect& SetLeftBorder(float delta);
-	Rect& SetRightBorder(float delta);
-	Rect& SetUpBorder(float delta);
-	Rect& SetDownBorder(float delta);
+
 	float		  GetUp()     const;
 	Vector2		  GetSize()   const;
 	float		  GetLeft()   const;
@@ -83,12 +69,9 @@ struct Rect : public Point{
 	float		  GetRight()  const;
 	float		  GetWidth()  const;
 	Vector2		  GetCenter() const;
-	float         GetRadius() const;
-	float		  GetHeigth() const;
+	float		  GetHeight() const;
 
-	virtual bool  Contains(Vector2 const& p);
-	static bool   AABBContains(Vector2 const& lu, Vector2 const& size, Vector2 const& p);
-	bool		  AABBContains(Vector2 const& p);
+	bool  Contains(Vector2 const& p);
 
 	enum class EditState :uint8_t
 	{
@@ -100,7 +83,6 @@ struct Rect : public Point{
 	virtual void OnEditable() { }
 
 protected:
-	RectType m_RectType{ RectType::Rect };
 	EditState m_editState{ EditState::Null };
 private:
 	Vector2 Rect_size;
@@ -127,11 +109,11 @@ public:
 	std::string GetBGTexturePath() const;
 	sf::Texture& GetBGTexture() const;
 
-	virtual void Draw(sf::RenderWindow& rw);
-	static inline bool NeedDraw{ false };
+	virtual void Draw();
 	void OnEditable() override { DrawUpdate(); }
 	void DrawUpdate();
 	
+private:
 	Color m_BGcolor{255,255,255};
 	std::string m_BGtexturePath;
 
@@ -140,8 +122,6 @@ public:
 	size_t m_SpriteNum{ 0 };
 	SpriteDrawType m_SpriteDrawType{ SpriteDrawType::TextureRect };
 
-private:
-	sf::VertexArray vac{ sf::PrimitiveType::TrianglesFan, 32 };
 	sf::VertexArray var{ sf::PrimitiveType::TrianglesFan, 4 };
 	sf::RenderStates rs;
 };
@@ -151,13 +131,9 @@ struct UIregion : public Drawable {
 	UIregion();
 	virtual ~UIregion();
 
-	friend void RecursiveOnEditable(UIregion* reg);
-
-	bool			GetActive() const;
+	UIregion&		SetName(std::string name);
 	std::string		GetName() const;
 	UIregion&		Clicable(bool b);
-	UIregion&		SetName(std::string name);
-	UIregion&		SetActive(bool active);
 
 	UIregion& SetCallbackOnMouseGrab(std::function<void(SuperMouse::Key, UIregion*)> f);
 	UIregion& SetCallbackOnMousePress(std::function<void(SuperMouse::Key, UIregion*)> f);
@@ -167,6 +143,7 @@ struct UIregion : public Drawable {
 	UIregion& SetCallbackOnMouseExit(std::function<void(UIregion*)> f);
 
 	UIregion& SetCallbackOnEditable(std::function<void()> f);
+	void RecursiveOnEditable(UIregion* reg);
 
 	// Virtual
 	virtual void	Update();
@@ -182,7 +159,6 @@ struct UIregion : public Drawable {
 
 private:
 	std::string Name;
-	bool m_isActive{ true };
 	Vector2 M_position, M_size; // сохраненные предыдущие позиция и размер
 	
 	// Static
@@ -193,7 +169,7 @@ private:
 protected:
 	// Click
 	bool m_isClicable{ false };
-	bool isGrab[SuperMouse::NumKeys], isAvailable{ false }, inRectNow{ false }, inRectPrev{ false };
+	bool isGrab[SuperMouse::Key::Count], isAvailable{ false }, inRectNow{ false }, inRectPrev{ false };
 
 	// Mouse keys
 	std::vector<std::function<void(SuperMouse::Key, UIregion*)>> FOnMouseGrab;

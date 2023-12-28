@@ -1,8 +1,6 @@
 #include "SuperMouse.hpp"
-
-void SuperMouse::initialize(sf::RenderWindow* _wwer) {
-	wwer = _wwer;
-}
+#include <SFML/Window/Mouse.hpp>
+#include "Windower.hpp"
 
 Vector2 ToVector2(sf::Vector2f v) {
 	return { v.x, v.y };
@@ -11,16 +9,20 @@ Vector2 ToVector2(sf::Vector2i v) {
 	return { (float)v.x, (float)v.y};
 }
 
-void SuperMouse::update() {
-	prev_pose = pose;
 
-	pose = ToVector2(sf::Mouse::getPosition());
-	win_pose = ToVector2(sf::Mouse::getPosition(*wwer));
-	map_pose = ToVector2(wwer->mapPixelToCoords({(int)win_pose.x, (int)win_pose.y}));
+void SuperMouse::Init() {
+	win_pos = map_pos = ToVector2(sf::Mouse::getPosition());
+	Windower::Win.AddEventCallback(sf::Event::EventType::MouseMoved, [&](sf::Event e) {MouseMoved(e); });
+}
 
-	dir = pose - prev_pose;
+void SuperMouse::MouseMoved(sf::Event e)
+{
+	win_pos = { (float)e.mouseMove.x, (float)e.mouseMove.y };
+	map_pos = ToVector2(Windower::Win.rw.mapPixelToCoords({ (int)win_pos.x, (int)win_pos.y }));
+}
 
-	for (int i = 0; i < NumKeys; i++)
+void SuperMouse::Update() {
+	for (int i = 0; i < Count; i++)
 	{
 		mButtonPrev[i] = mButtonNow[i];
 		mButtonNow[i] = sf::Mouse::isButtonPressed((sf::Mouse::Button)i);

@@ -11,22 +11,22 @@ void VerticalLayoutGroup::OnEditable() {
 		break;
 	case LayoutGroup::Height:
 		SetLocalY(0);
-		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeigth());
+		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeight());
 		break;
 	case LayoutGroup::Both:
 		SetLocalX(0);
 		SetLocalY(0);
 		SetWidth(dynamic_cast<Rect*>(GetParent())->GetWidth());
-		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeigth());
+		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeight());
 		break;
 	}
 
 	size_t s = GetChildrens().size();
 	float sss{ 0 };
 	for (auto& u : GetChildrens()) {
-		sss += dynamic_cast<Rect*>(u)->GetHeigth();
+		sss += dynamic_cast<Rect*>(u)->GetHeight();
 	}
-	float ss = GetHeigth() - sss;
+	float ss = GetHeight() - sss;
 	ss /= s + 1;
 	float start{ 0 };
 	for (size_t i = 0; i < s; i++)
@@ -55,7 +55,7 @@ void VerticalLayoutGroup::OnEditable() {
 
 		}
 
-		start += dynamic_cast<Rect*>(GetChildrens()[i])->GetHeigth();
+		start += dynamic_cast<Rect*>(GetChildrens()[i])->GetHeight();
 	}
 }
 
@@ -70,13 +70,13 @@ void HorizontalLayoutGroup::OnEditable() {
 		break;
 	case LayoutGroup::Height:
 		SetLocalY(0);
-		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeigth());
+		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeight());
 		break;
 	case LayoutGroup::Both:
 		SetLocalX(0);
 		SetLocalY(0);
 		SetWidth(dynamic_cast<Rect*>(GetParent())->GetWidth());
-		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeigth());
+		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeight());
 		break;
 	}
 
@@ -105,11 +105,11 @@ void HorizontalLayoutGroup::OnEditable() {
 			GetChildrens()[i]->SetLocalY(0);
 		}
 		else if (alignment / 3 == 1) { // middle
-			GetChildrens()[i]->SetLocalY(GetHeigth() / 2 - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeigth() / 2);
+			GetChildrens()[i]->SetLocalY(GetHeight() / 2 - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeight() / 2);
 
 		}
 		else if (alignment / 3 == 2) { // down
-			GetChildrens()[i]->SetLocalY(GetHeigth() - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeigth());
+			GetChildrens()[i]->SetLocalY(GetHeight() - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeight());
 
 		}
 
@@ -129,13 +129,13 @@ void ColumnGridLayoutGroup::OnEditable()
 		break;
 	case LayoutGroup::Height:
 		SetLocalY(0);
-		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeigth());
+		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeight());
 		break;
 	case LayoutGroup::Both:
 		SetLocalX(0);
 		SetLocalY(0);
 		SetWidth(dynamic_cast<Rect*>(GetParent())->GetWidth());
-		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeigth());
+		SetHeight(dynamic_cast<Rect*>(GetParent())->GetHeight());
 		break;
 	}
 
@@ -167,10 +167,10 @@ void ColumnGridLayoutGroup::OnEditable()
 				GetChildrens()[i]->SetLocalY(top_left.y);
 			}
 			else if (alignment / 3 == 1) { // middle
-				GetChildrens()[i]->SetLocalY(top_left.y + cell_size.y / 2 - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeigth() / 2);
+				GetChildrens()[i]->SetLocalY(top_left.y + cell_size.y / 2 - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeight() / 2);
 			}
 			else if (alignment / 3 == 2) { // down
-				GetChildrens()[i]->SetLocalY(top_left.y + cell_size.y - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeigth());
+				GetChildrens()[i]->SetLocalY(top_left.y + cell_size.y - dynamic_cast<Rect*>(GetChildrens()[i])->GetHeight());
 			}
 			continue;
 		}

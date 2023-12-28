@@ -102,12 +102,6 @@ bool Toggle::GetSelect()
 void Toggle::Update()
 {
 	Button::Update();
-	//if (!inRectNow) {
-	//	if (isSelected)
-	//		SetBGColor(SelectColor);
-	//	else
-	//		SetBGColor(NormalColor);
-	//}
 }
 
 void ToggleGroup::Add(Toggle* t)

@@ -1,13 +1,12 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include "StandartTypes.hpp"
+#include "Vector2.hpp"
+#include "Color.hpp"
 #include <map>
 #include <vector>
 #include <functional>
 #include "UIregion.hpp"
-
-struct Windower;
 
 struct Windower : public UIregion {
 	Windower() = default;
@@ -17,7 +16,6 @@ struct Windower : public UIregion {
 	void SetSize(Vector2 s);
 	void SetPosition(Vector2 p);
 	void SetCenter(Vector2 c);
-
 	void Centering();
 
 	Vector2 GetSize();

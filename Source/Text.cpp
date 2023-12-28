@@ -1,11 +1,18 @@
 #include "Text.hpp"
 #include "ResourceManager.hpp"
 #include "Windower.hpp"
+#include "Time.hpp"
 
 #pragma warning (disable: 6295) // неверно определенный цикл for. Цикл выполняется бесконечно
 #pragma warning (disable: 6001) // использование неинициальзированной памяти
 #pragma warning (disable: 6385) // чтение недопустимых данных
 
+UItext::UItext()
+{
+	m_text.setFont(ResourceManager::GetFont(m_font));
+	m_text.setFillColor({ 0,0,0 });
+	
+}
 
 UItext& UItext::SetText(std::wstring txt) {
 	m_restructString = m_string = txt;
@@ -28,12 +35,6 @@ UItext& UItext::SetTextFillColor(Color c)
 
 std::wstring UItext::GetText() {
 	return m_string;
-}
-
-UItext::UItext()
-{
-	m_text.setFont(ResourceManager::GetFont(m_font));
-	m_text.setFillColor({ 0,0,0 });
 }
 
 void UItext::Update() {
@@ -86,9 +87,9 @@ void UItext::OnEditable() {
 
 }
 
-void UItext::Draw(sf::RenderWindow& rw) {
-	UIregion::Draw(rw);
-	rw.draw(m_text);
+void UItext::Draw() {
+	UIregion::Draw();
+	Windower::Win.rw.draw(m_text);
 }
 
 uint32_t UItext::GetStyle() {
@@ -152,12 +153,6 @@ UItext& UItext::SetTextRectType(TextRectType trt)
 	OnEditable();
 	return *this;
 }
-UItext& UItext::SetEndLastWrap(EndLastWrap elw)
-{
-	m_endLastWrap = elw;
-	OnEditable();
-	return *this;
-}
 float UItext::GetOutlineThickness() {
 	return m_text.getOutlineThickness();
 }
@@ -185,11 +180,6 @@ AlignmentVertical UItext::getAlignmentV()
 TextRectType UItext::GetTextRectType()
 {
 	return m_textRectType;
-}
-
-EndLastWrap UItext::GetEndLastWrap()
-{
-	return m_endLastWrap;
 }
 
 
@@ -475,6 +465,7 @@ void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 			return;
 		}
 		if (e.key.code == sf::Keyboard::BackSpace) {
+			d_time = 0;
 			if (!m_string.empty()) {
 				if (cursor > 0 && cursor <= m_string.size()) {
 					m_string.erase(m_string.begin() + cursor - 1);
@@ -487,6 +478,7 @@ void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 			return;
 		}
 		if (e.key.code == sf::Keyboard::Delete) {
+			d_time = 0;
 			if (!m_string.empty()) {
 				if (cursor >= 0 && cursor < m_string.size()) {
 					m_string.erase(m_string.begin() + cursor);
@@ -503,11 +495,13 @@ void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 		}
 
 		m_canInput = true;
+		d_time = 0;
+		m_blink = true;
 
 		if (e.key.code == sf::Keyboard::Left) {
 			if (cursor > 0) {
 				cursor--;
-				counter = 60;
+				d_time = 0;
 				m_blink = true;
 			}
 			return;
@@ -515,7 +509,7 @@ void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 		if (e.key.code == sf::Keyboard::Right) {
 			if (cursor < m_restructString.size()) {
 				cursor++;
-				counter = 60;
+				d_time = 0;
 				m_blink = true;
 			}
 			return;
@@ -540,10 +534,10 @@ void TextInput::func1(sf::Event e) { // KeyPressed вызывается до TextEntered
 
 void TextInput::func(sf::Event e) {
 	if (m_selected && m_canInput) {
-		//std::wcout << e.key.code << '\n';
 		m_string.insert(m_string.begin() + cursor, static_cast<wchar_t>(e.key.code));
 		SetText(m_string);
 		cursor++;
+		d_time = 0;
 		CallbackOnTextUpdated();
 	}
 }
@@ -551,26 +545,23 @@ void TextInput::func(sf::Event e) {
 void TextInput::Update() {
 	UItext::Update();
 
+	d_time += Time::GetElapsedTime();
+	if (d_time >= 0.5f) {
+		d_time -= 0.5f;
+		m_blink ^= 1;
+	}
+
 	if (m_selected) {
-		if (counter >= 120) {
-			counter = 0;
-			m_blink = !m_blink;
-		}
 		if (m_blink && cursor <= m_restructString.size()) m_text.setString(m_restructString.substr(0, cursor) + L'|' + m_restructString.substr(cursor));
 		else m_text.setString(m_restructString);
-		counter += 1;
 	}
 	else {
-		if (counter != 0) {
-			counter = 0;
-			m_blink = true;
-			m_text.setString(m_restructString);
-		}
+		m_text.setString(m_restructString);
 	}
 }
 
-void TextInput::Draw(sf::RenderWindow& rw) {
-	UItext::Draw(rw);
+void TextInput::Draw() {
+	UItext::Draw();
 }
 
 TextInput& TextInput::SetTextContent(TextContent tc)
@@ -579,17 +570,16 @@ TextInput& TextInput::SetTextContent(TextContent tc)
 	return *this;
 }
 
-
 void TextInput::OnMousePress(SuperMouse::Key key) {
 	if (!m_selected) {
 		m_selected = true;
 		CallbackOnTextOnFocus();
 	}
-	int new_pos = static_cast<int>((SuperMouse::map_pose.x - GetLeft()) / (m_text.getLocalBounds().width/m_string.size()));
+	int new_pos = static_cast<int>((SuperMouse::map_pos.x - GetLeft()) / (m_text.getLocalBounds().width/m_string.size()));
 	if (new_pos < 0) new_pos = 0;
 	else if (new_pos > m_string.size()) new_pos = (int)m_string.size();
 	cursor = new_pos;
-	counter = 60;
+	d_time = 0;
 	m_blink = true;
 }
 

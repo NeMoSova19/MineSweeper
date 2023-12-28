@@ -1,9 +1,10 @@
 #pragma once
-#include "StandartTypes.hpp"
+#include "Vector2.hpp"
+#include "Color.hpp"
 #include "UIregion.hpp"
 #include "Text.hpp"
 
-struct Button : public virtual UIregion {
+struct Button : public UIregion {
 	Button(Button&&) = delete;
 	virtual ~Button();
 	Button();
@@ -26,7 +27,7 @@ struct Button : public virtual UIregion {
 	void OnMouseRelease(SuperMouse::Key key) override;
 
 	// Drawing
-	void Draw(sf::RenderWindow& rw) override;
+	void Draw() override;
 	void Update() override;
 
 	UItext* text;
@@ -34,6 +35,4 @@ protected:
 	Color HoverColor{230,230,230};
 	Color TouchColor{255,255,255};
 	Color NormalColor{255,255,255};
-
-	std::string GetType() { return "UIButton"; }
 };

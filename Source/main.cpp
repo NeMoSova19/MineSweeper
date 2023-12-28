@@ -1,20 +1,25 @@
-#include "Windower.hpp"
-#include "SuperMouse.hpp"
 #include <string>
+#include "SuperMouse.hpp"
+#include "Settings.hpp"
 #include "UIregion.hpp"
+#include "Windower.hpp"
 #include "Text.hpp"
 #include "Button.hpp"
 #include "Toggle.hpp"
 #include "LayoutGroup.hpp"
 #include "Canvas.hpp"
 #include "Minesweeper.hpp"
-#include "Settings.hpp"
-
+#include "Time.hpp"
+#include <iostream>
 
 void __CloseWindow(sf::Event const e) {
 	if (e.type == sf::Event::Closed || (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Key::Escape)) {
 		switch (Settings::Where)
 		{
+		case WHERE::MainMenu:
+			if (e.type == sf::Event::Closed)
+				Windower::Win.rw.close();
+			return;
 		case WHERE::Stats:
 			Scene::CanvasSettings("Stats");
 			Scene::CanvasSettings("MainMenu", true, true);
@@ -42,36 +47,9 @@ void __CloseWindow(sf::Event const e) {
 	}
 }
 
-void __OnFocusExit(sf::Event const e) {
-	if (!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit()/10);
-}
-void __OnFocusEnter(sf::Event const e) {
-	if (!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit());
-}
-
-struct FPS {
-	static void Add(int f) {
-		if (f < 0)f = 0;
-
-		total = (total * deq.size() + f) / (deq.size() + 1.);
-		deq.push_back(f);
-
-		if (deq.size() > max_cnt) {
-			int n = deq.front();
-
-			total = (total * deq.size() - n) / (deq.size() - 1.);
-
-			deq.pop_front();
-		}
-	}
-	static inline double total{ 0 };
-	static inline int max_cnt{ 100 };
-	static inline std::deque<int> deq;
-};
-
 void Init();
 
-int WinMain() {
+int main() {
 	Settings::ReadSettings();
 	
 	sf::Image ico; ico.loadFromFile("Minesweeper.png");
@@ -80,9 +58,11 @@ int WinMain() {
 	Windower::Win.rw.setVerticalSyncEnabled(Settings::GetVSunc());
 	Windower::Win.AddEventCallback(sf::Event::KeyPressed, __CloseWindow);
 	Windower::Win.AddEventCallback(sf::Event::Closed, __CloseWindow);
-	Windower::Win.AddEventCallback(sf::Event::GainedFocus, __OnFocusEnter);
-	Windower::Win.AddEventCallback(sf::Event::LostFocus, __OnFocusExit);
-	SuperMouse::initialize(&Windower::Win.rw);
+	Scene::CreateCanvas("Window");
+	Scene::CanvasSettings("Window", true, true);
+	Scene::AddOnCanvas("Window", &Windower::Win);
+	SuperMouse::Init();
+	Time::Init();
 
 	if(!Settings::GetVSunc()) Windower::Win.rw.setFramerateLimit(Settings::GetFPS_limit());
 
@@ -92,30 +72,21 @@ int WinMain() {
 		Windower::Win.SetTitlebarColor(Color::White);
 
 	Init();
-	
+
 	////////////////////////////////////////////////////////
-	sf::Clock cl;
-	sf::Time elTime;
 	while (Windower::Win.rw.isOpen()) {
 		// Update
-		UIregion::NeedDraw = false;
-		UIregion::FindByName<UItext>("S_t8")->SetText(L"fps: " + std::to_wstring((size_t)FPS::total));
+		UIregion::FindByName<UItext>("S_t8")->SetText(L"fps: " + std::to_wstring(Time::GetFPS()));
 		Windower::Win.CheckEvents();
-		SuperMouse::update();
-		Windower::Win.Update();
-		Game::Update(elTime.asSeconds());
+		SuperMouse::Update();
+		Game::Update();
 		Scene::Update();
 	
 		// Draw
 		Windower::Win.rw.clear();
-		Scene::Draw(Windower::Win.rw);
+		Scene::Draw();
 		Windower::Win.rw.display();
-		
-	
-		elTime = cl.getElapsedTime();
-		cl.restart();
-		FPS::Add(int(1. / elTime.asSeconds()));
-	
+		Time::Update();
 	}
 
 	Windower::Win.rw.close();
@@ -125,20 +96,16 @@ int WinMain() {
 void Init() {
 	// Layer0
 	Scene::CreateCanvas("Layer0");
-	Scene::CanvasSettings("Layer0", true, true, true);
+	Scene::CanvasSettings("Layer0", true, true);
 	auto& BG_r = Scene::AddOnCanvas("Layer0", new UIregion);
 
 	BG_r
-		// UIregion
 		.SetName("L_r")
 		.SetTexture("Textures/BG.png")
 		.SetTextureRect({ 0,0,0,0 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
 		.SetBGColor(Color(255, 255, 255, 255))
-		// Rect
 		.SetSizeAcrossPos({ 800,800 })
 		.SetGlobalPosition({ 0,0 });
-
 
 	// MainMenu
 	Scene::CreateCanvas("MainMenu");
@@ -178,242 +145,129 @@ void Init() {
 	MM_hlg1.alignment = LayoutGroup::Alignment::MC;
 	MM_hlg1.SetHeight(140);
 
-	// MM_bg
 	MM_bg
-		// UIregion
 		.SetName("MM_bg")
 		.SetBGColor(Color(255, 255, 255, 240))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
-		// Rect
 		.SetSizeAcrossPos({ 600,700 });
 
-	// MM_t
 	MM_t
-		// UItext
 		.SetText(L"Сапер")
 		.SetStyle(sf::Text::Style::Bold | sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(3.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(120)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
+		
 		.SetName("MM_T_Saper")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
-		.SetSizeAcrossPos({ 320,120 })
-		.SetCenter({ 400,180 });
+		.SetSizeAcrossPos({ 320,120 });
 
 	MM_t1
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("MM_B_t1")
-		.SetBGColor(Color::White)
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 140,140 })
 		.SetCenter({ 250,350 });
 	MM_t1.text
-		// UItext
 		->SetText(L"9 на 9")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(28)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_8x8")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
 
 	MM_t2
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("MM_B_t2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 140,140 })
 		.SetCenter({ 400,350 });
 	MM_t2.text
-		// UItext
 		->SetText(L"16 на 16")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(28)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_16x16")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
 
 	MM_t3
-		// Button
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		.SetNormalColor(Color::White)
-		// UIregion
 		.SetName("MM_B_t3")
-		.SetBGColor(Color::White)
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)
-
-
-		// Rect
 		.SetSizeAcrossPos({ 140,140 })
 		.SetCenter({ 550,350 });
 	MM_t3.text
-		// UItext
 		->SetText(L"30 на 16")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(28)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_32x32")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
 
 	MM_b1
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("MM_B_b1")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 })
 		.SetCenter({ 400,500 });
 	MM_b1.text
-		// UItext
 		->SetText(L"Статистика")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_stat")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 
 	MM_b2
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("MM_B_b2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 })
 		.SetCenter({ 400,500 });
 	MM_b2.text
-		// UItext
 		->SetText(L"Настройки")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_settings")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 
 	MM_b3
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("MM_B_b3")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 })
 		.SetCenter({ 400,620 });
 	MM_b3.text
-		// UItext
 		->SetText(L"Выйти")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_exit")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 
 	// Game
 	Scene::CreateCanvas("Game");
 	Scene::CanvasSettings("Game", false, false);
-
 
 
 	// WinGame
@@ -440,101 +294,53 @@ void Init() {
 	W_vlg.alignment = LayoutGroup::Alignment::MC;
 
 	W_bg
-		// UIregion
 		.SetName("E_bg")
 		.SetBGColor(Color(255, 255, 255, 200))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
-		// Rect
 		.SetSizeAcrossPos({ 400,400 });
 
-
 	W_t
-		// UItext
 		.SetText(L"Вы выиграли")
 		.SetStyle(sf::Text::Style::Bold | sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(3.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("E_T_Exit")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 400,60 });
 
-
 	W_b1
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b1")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 	W_b1.text
-		// UItext
 		->SetText(L"Выйти")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_yes")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
-
 
 	W_b2
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 	W_b2.text
-		// UItext
 		->SetText(L"Ещё раз")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_no")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
-
 
 	// LoseGame
 	Scene::CreateCanvas("LoseGame");
@@ -560,99 +366,53 @@ void Init() {
 	L_vlg.alignment = LayoutGroup::Alignment::MC;
 
 	L_bg
-		// UIregion
 		.SetName("E_bg")
 		.SetBGColor(Color(255, 255, 255, 200))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
-		// Rect
 		.SetSizeAcrossPos({ 400,400 });
 
 	L_t
-		// UItext
 		.SetText(L"Вы проиграли")
 		.SetStyle(sf::Text::Style::Bold | sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(3.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("E_T_Exit")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 400,60 });
 
 	L_b1
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b1")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 	L_b1.text
-		// UItext
 		->SetText(L"Выйти")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_yes")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
-
 
 	L_b2
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 	L_b2.text
-		// UItext
 		->SetText(L"Ещё раз")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_no")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
-
 
 	// Exit
 	Scene::CreateCanvas("Exit");
@@ -664,8 +424,6 @@ void Init() {
 	auto& E_b3 = Scene::AddOnCanvas("Exit", new Button);
 	auto& E_vlg = Scene::AddOnCanvas("Exit", new VerticalLayoutGroup);
 	auto& E_vlg1 = Scene::AddOnCanvas("Exit", new VerticalLayoutGroup);
-
-	//ed.Set(&E_hlg);
 
 	E_t.SetParent(&E_vlg1);
 	E_b2.SetParent(&E_vlg1);
@@ -682,135 +440,70 @@ void Init() {
 	E_vlg1.alignment = LayoutGroup::Alignment::MC;
 
 	E_bg
-		// UIregion
 		.SetName("E_bg")
 		.SetBGColor(Color(255, 255, 255, 200))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
-		// Rect
 		.SetSizeAcrossPos({ 400,500 });
 
-
 	E_t
-		// UItext
 		.SetText(L"Пауза")
 		.SetStyle(sf::Text::Style::Bold | sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(3.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("E_T_Exit")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 400,50 });
 
-
-
 	E_b1
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b1")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect({ 0,0,0,0 })
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 
 	E_b1.text
-		// UItext
 		->SetText(L"Выйти")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_yes")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
-
 
 	E_b2
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect({ 0,0,0,0 })
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 	E_b2.text
-		// UItext
 		->SetText(L"Продолжить")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_no")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 
 	E_b3
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("E_B_b2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect({ 0,0,0,0 })
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 	E_b3.text
-		// UItext
 		->SetText(L"Заново")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("MM_B_T_no")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
-
 
 	// Settings
 	Scene::CreateCanvas("Settings");
@@ -876,219 +569,143 @@ void Init() {
 
 	S_ti1
 		.SetTextContent(TextContent::digits)
-		// UItext
 		.SetText(std::to_wstring(Settings::GetFPS_limit()))
 		.SetStyle(sf::Text::Style::Bold | sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(3.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(30)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_TI1")
-		.SetBGColor(Color::White)
 		.SetTexture("ToggleOff")
 		.SetTextureRect({ 0,0,0,0 })
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 60,40 });
 
 	S_bg
-		// UIregion
 		.SetName("S_bg")
 		.SetBGColor(Color(255, 255, 255, 240))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
-		// Rect
 		.SetSizeAcrossPos({ 600,700 });
 
 	S_t
-		// UItext
 		.SetText(L"Настройки")
 		.SetStyle(sf::Text::Style::Italic | sf::Text::Style::Bold)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(60)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 320,120 })
 		.SetLocalPosition({ 140,0 });
+
 	S_t1
-		// UItext
 		.SetText(L" Ограничение FPS")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t1")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	S_t2
-		// UItext
 		.SetText(L" Вертикальная синхронизация")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t2")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	S_t3
-		// UItext
 		.SetText(L" Ночная тема")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t3")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	S_t4
-		// UItext
 		.SetText(L" Флаг на ЛКМ")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t4")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	S_t5
-		// UItext
 		.SetText(L" Быстрое вскапывание")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t5")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	S_t6
-		// UItext
 		.SetText(L" Быстрая постановка флага")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t6")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	S_t7
-		// UItext
 		.SetText(L"Нажмите ESC для выхода в меню")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(20)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t7")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 })
 		.SetLocalPosition({ 12,665 });
+
 	S_t8
-		// UItext
 		.SetText(L"fps:")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
 		.SetAlignment(AlignmentVertical::Top)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("S_t8")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,50 })
 		.SetLocalPosition({ 0,0 });
 
 	S_b1
-		// Toggle
 		.SetSelectColor(Color::White)
 		.SetSelect(Settings::GetVSunc())
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("S_b1")
-		.SetBGColor(Color::White)
 		.SetTextureRect(Rect(0, 0, 40, 40))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 40,40 })
 		.SetGlobalPosition({ 600,200 });
+
 	if (S_b1.GetSelect()) {
 		S_b1.SetTexture("ToggleOn");
 	}
@@ -1097,21 +714,14 @@ void Init() {
 	}
 
 	S_b2
-		// Toggle
 		.SetSelectColor(Color::White)
 		.SetSelect((bool)Settings::GetTheme())
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("S_b2")
-		.SetBGColor(Color::White)
 		.SetTextureRect(Rect(0, 0, 40, 40))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 40,40 })
 		.SetGlobalPosition({ 600,250 });
+
 	if (S_b2.GetSelect()) {
 		S_b2.SetTexture("ToggleOn");
 	}
@@ -1120,21 +730,14 @@ void Init() {
 	}
 
 	S_b3
-		// Toggle
 		.SetSelectColor(Color::White)
 		.SetSelect(Settings::GetLeftClickFlag())
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("S_b3")
-		.SetBGColor(Color::White)
 		.SetTextureRect(Rect(0, 0, 40, 40))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 40,40 })
 		.SetGlobalPosition({ 600,300 });
+
 	if (S_b3.GetSelect()) {
 		S_b3.SetTexture("ToggleOn");
 	}
@@ -1143,21 +746,14 @@ void Init() {
 	}
 
 	S_b4
-		// Toggle
 		.SetSelectColor(Color::White)
 		.SetSelect(Settings::GetEasyDigging())
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("S_b4")
-		.SetBGColor(Color::White)
 		.SetTextureRect(Rect(0, 0, 40, 40))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 40,40 })
 		.SetGlobalPosition({ 600,350 });
+
 	if (S_b4.GetSelect()) {
 		S_b4.SetTexture("ToggleOn");
 	}
@@ -1166,28 +762,20 @@ void Init() {
 	}
 
 	S_b5
-		// Toggle
 		.SetSelectColor(Color::White)
 		.SetSelect(Settings::GetEasyFlagging())
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("S_b5")
-		.SetBGColor(Color::White)
 		.SetTextureRect(Rect(0, 0, 40, 40))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 40,40 })
 		.SetGlobalPosition({ 600,400 });
+
 	if (S_b5.GetSelect()) {
 		S_b5.SetTexture("ToggleOn");
 	}
 	else {
 		S_b5.SetTexture("ToggleOff");
 	}
-
 
 
 	Scene::CreateCanvas("Stats");
@@ -1252,296 +840,181 @@ void Init() {
 	Ss_t7.SetParent(&Ss_bg);
 
 	Ss_b1
-		// Toggle
 		.SetSelectColor(Color(127, 255, 127))
 		.SetSelect(true)
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("Ss_b1")
 		.SetBGColor(Color(127, 255, 127))
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
 	Ss_b1.text
-		// UItext
 		->SetText(L"9 на 9")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(28)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_B_T_8x8")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
+	
 	Ss_b2
-		// Toggle
 		.SetSelectColor(Color(127, 255, 127))
 		.SetSelect(false)
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("Ss_b2")
-		.SetBGColor(Color::White)
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
 	Ss_b2.text
-		// UItext
 		->SetText(L"16 на 16")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(28)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_B_T_16x16")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
+	
 	Ss_b3
-		// Toggle
 		.SetSelectColor(Color(127, 255, 127))
 		.SetSelect(false)
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("Ss_b3")
-		.SetBGColor(Color::White)
 		.SetTexture("Button1k1")
 		.SetTextureRect(Rect(0, 0, 128, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
 	Ss_b3.text
-		// UItext
 		->SetText(L"30 на 16")
 		.SetStyle(sf::Text::Style::Regular)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(28)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_B_T_32x32")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 140,140 });
+
 	Ss_b4
-		// Button
-		.SetNormalColor(Color::White)
 		.SetHoverColor(Color(0, 0, 0, 25))
-		.SetTouchColor(Color::White)
-		// UIregion
 		.SetName("MM_B_b1")
-		.SetBGColor(Color::White)
 		.SetTexture("Button3k1")
 		.SetTextureRect(Rect(0, 0, 128 * 3, 128))
-		.SetRectType(RectType::Rect)
-		// Rect
 		.SetSizeAcrossPos({ 300,100 })
 		.SetLocalPosition({ 150,540 });
 	Ss_b4.text
-		// UItext
 		->SetText(L"Сбросить")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(126, 200, 14))
 		.SetOutlineThickness(2.f)
-		.SetFont("Fonts/times.ttf")
 		.SetCharacterSize(50)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_B_T_reset")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 300,100 });
 
 	Ss_bg
-		// UIregion
 		.SetName("Ss_bg")
 		.SetBGColor(Color(255, 255, 255, 240))
 		.SetTexture("MenuBG")
 		.SetTextureRect({ 0,0,600,700 })
-		.SetSpriteDrawType(SpriteDrawType::TextureRect)
-		// Rect
 		.SetSizeAcrossPos({ 600,700 });
 
 	Ss_t
-		// UItext
 		.SetText(L"Статистика")
 		.SetStyle(sf::Text::Style::Italic | sf::Text::Style::Bold)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(60)
-		.SetAlignment(AlignmentHorizontal::Center)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 320,120 })
 		.SetLocalPosition({ 140,0 });
+
 	Ss_t1
-		// UItext
 		.SetText(L" Выиграно матчей")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t1")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	Ss_t2
-		// UItext
 		.SetText(L" Проиграно матчей")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t2")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	Ss_t3
-		// UItext
 		.SetText(L" Лучшее время")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t3")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	Ss_t4
-		// UItext
 		.SetText(L"0")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t4")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	Ss_t5
-		// UItext
 		.SetText(L"0")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t5")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	Ss_t6
-		// UItext
 		.SetText(L"0:0")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(30)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t6")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 });
+
 	Ss_t7
-		// UItext
 		.SetText(L"Нажмите ESC для выхода в меню")
 		.SetStyle(sf::Text::Style::Italic)
-		.SetTextFillColor(Color(0, 0, 0))
 		.SetTextOutlineColor(Color(0, 0, 0))
 		.SetOutlineThickness(0)
 		.SetFont("Fonts/consola.ttf")
 		.SetCharacterSize(20)
 		.SetAlignment(AlignmentHorizontal::Left)
-		.SetAlignment(AlignmentVertical::Center)
-		.SetTextRectType(TextRectType::Bounded)
-		.SetEndLastWrap(EndLastWrap::DeleteLastWord)
-		// UIregion
 		.SetName("Ss_t7")
 		.SetBGColor(Color(0, 0, 0, 0))
-		// Rect
 		.SetSizeAcrossPos({ 500,35 })
 		.SetLocalPosition({ 12,665 });
+
 
 	S_ti1.SetCallbackOnTextOffFocus([&]() {
 		Settings::SetFPS_limit(stoi(S_ti1.GetText()));

@@ -1,6 +1,5 @@
 #pragma once
 #include "Button.hpp"
-#include <queue>
 
 struct Tile : public Button {
 	Tile(Vector2 pos, Vector2 size, size_t i, size_t j);
@@ -16,7 +15,6 @@ struct Tile : public Button {
 	static inline size_t total_placed_flags{ 0 };
 	static inline size_t total_opened_tiles{ 0 };
 	static inline std::vector<std::vector<Tile*>> map{};
-	static inline std::queue<std::pair<size_t, size_t>> Boom_queue{};
 
 	int8_t stat{ 0 };
 private:
@@ -40,9 +38,8 @@ private:
 
 
 struct Game {
-
 	static void Start();
-	static void Update(float deltaTime);
+	static void Update();
 	static void Pause();
 	static void UnPause();
 	static void Restart();

@@ -1,5 +1,6 @@
 #pragma once
 #include "Button.hpp"
+#include "Color.hpp"
 
 Button::Button() {
 	text = new UItext;
@@ -40,14 +41,9 @@ void Button::OnMouseExit()
 	SetBGColor(NormalColor);
 }
 
-float GetZnak(float f) {
-	if (f > 0) return 1;
-	return -1;
-}
-
-void Button::Draw(sf::RenderWindow& rw) {
-	Drawable::Draw(rw);
-	text->Draw(rw);
+void Button::Draw() {
+	Drawable::Draw();
+	text->Draw();
 }
 
 void Button::Update()

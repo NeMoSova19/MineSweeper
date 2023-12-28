@@ -1,41 +1,32 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include "StandartTypes.hpp"
+#include "Vector2.hpp"
+#include <SFML/Graphics/RenderWindow.hpp>
 
-/*
-Полная обработанная информация о мыши
-\param win_pose позиция относительно окна
-\param pose		позиция мыши
-\param dir		смещение за кадр
-\param mButtonNow		состояние нажатия кнопок (bool)
-\param mButtonState		1 из 4 состояний в ButtonState
-*/
 class SuperMouse {
 public:
-	static void initialize(sf::RenderWindow* _wwer);
+	static void Init();
 
-	static void update();
+	static void Update();
 
-	enum ButtonState{
+	enum ButtonState: uint8_t{
 		Not_press,
 		Press,
 		Release,
 		Hold
 	};
 
-	enum Key {
-		Left, Right, Middle, Side1, Side2
+	enum Key: uint8_t {
+		Left, Right, Middle, Side1, Side2, Count
 	};
 
-	static inline const int8_t NumKeys{ 5 };
-	static inline Vector2 win_pose, pose, map_pose, dir;
-	static inline ButtonState mButtonState[NumKeys];
+	static inline Vector2 win_pos, map_pos;
+	static inline ButtonState mButtonState[Count];
 
 
 private:
-	static inline Vector2 prev_pose;
-	static inline sf::RenderWindow* wwer{nullptr};
-	static inline bool mButtonNow[NumKeys];
-	static inline bool mButtonPrev[NumKeys];
+	static void MouseMoved(sf::Event);
+
+	static inline bool mButtonNow[Count];
+	static inline bool mButtonPrev[Count];
 
 };

@@ -1,5 +1,6 @@
 #pragma once
-#include "StandartTypes.hpp"
+#include "Vector2.hpp"
+#include "Color.hpp"
 #include "Minesweeper.hpp"
 
 
@@ -22,8 +23,8 @@ struct Stat {
 
 struct Settings abstract {
 
-	static        void    ReadSettings();
-	static        void    WriteSettings();
+	static void ReadSettings();
+	static void WriteSettings();
 
 	static void SetLeftClickFlag(bool b);
 	static void SetEasyDigging(bool b);
@@ -56,5 +57,3 @@ private:
 
 	static inline std::string settings_path{ "Saves/Settings.json" };
 };
-
-#define GAME

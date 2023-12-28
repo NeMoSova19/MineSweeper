@@ -1,10 +1,27 @@
 #pragma once
-#include "StandartTypes.hpp"
+#include "Vector2.hpp"
+#include "Color.hpp"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "UIregion.hpp"
 #include "SuperMouse.hpp"
-#include "UIenum.hpp"
+
+
+enum class AlignmentHorizontal
+{
+	Left, Center, Right, Width
+};
+enum class AlignmentVertical
+{
+	Top, Center, Down, Height
+};
+enum class TextRectType
+{
+	InOneLine, // ¬ одну линию (мб выводить только то что влазиет в линию? и примен€ть выравнивание дл€ линии)
+	InfiniteWrap, // Ѕесконечный перенос
+	Bounded // ќграниченный текст
+};
+
 
 enum class UItextStyle : uint8_t
 {
@@ -22,7 +39,7 @@ struct UItext : public UIregion {
 
 	void Update() override;
 	void OnEditable() override;
-	void Draw(sf::RenderWindow& rw) override;
+	void Draw() override;
 
 	// Set
 	UItext& SetText(std::wstring txt);
@@ -35,7 +52,6 @@ struct UItext : public UIregion {
 	UItext& SetAlignment(AlignmentHorizontal);
 	UItext& SetAlignment(AlignmentVertical);
 	UItext& SetTextRectType(TextRectType);
-	UItext& SetEndLastWrap(EndLastWrap);
 
 	// Get
 	std::wstring		GetText();
@@ -48,30 +64,18 @@ struct UItext : public UIregion {
 	AlignmentHorizontal getAlignmentH();
 	AlignmentVertical   getAlignmentV();
 	TextRectType		GetTextRectType();
-	EndLastWrap			GetEndLastWrap();
 
 protected:
-	// «начимые пол€
 	sf::Text m_text;
 	std::string m_font{ "Fonts/times.ttf" };
 	AlignmentHorizontal m_alig_H{ AlignmentHorizontal::Center };
 	AlignmentVertical m_alig_V{ AlignmentVertical::Center };
 	TextRectType m_textRectType{ TextRectType::Bounded };
-	EndLastWrap m_endLastWrap{ EndLastWrap::DeleteLastWord };
-
-	// ƒополнительные пол€
-	//std::map<char, Vector2> m_lettersSize;
 
 	sf::FloatRect aabb;
 	float m_normalWidth{ 100.f };
 	std::wstring m_string; // входна€ строка
 	std::wstring m_restructString; // выходна€ строка
-
-	// перенос всегда по словам
-	// обрезка не влезающего текста только в режиме Bounded 
-	// если единственное слово не влезает в Bounded то выводить влезающую часть + "..."
-	// иначе по инструкции EndLastWrap
-
 
 private:
 	void RestructText_InOneLine();
@@ -97,7 +101,7 @@ struct TextInput : public UItext
 
 	void Update() override;
 
-	void Draw(sf::RenderWindow& rw) override;
+	void Draw() override;
 
 	TextInput& SetTextContent(TextContent tc);
 
@@ -111,7 +115,8 @@ struct TextInput : public UItext
 
 private:
 	bool m_selected{ false }, m_blink{ true }, m_canInput{ true };
-	int counter{ 0 }, cursor{ 0 };
+	int cursor{ 0 };
+	float d_time{ 0.f };
 	TextContent text_content{ TextContent::all };
 	std::function<void()> CallbackOnTextUpdated{ []() {} };
 	std::function<void()> CallbackOnTextEnter{ []() {} };

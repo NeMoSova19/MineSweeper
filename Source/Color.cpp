@@ -1,23 +1,6 @@
-#include "StandartTypes.hpp"
+#include "Color.hpp"
+#include <utility>
 
-
-//Color::Color(const Vector3& v) { // 0...1
-//	r = static_cast<uint8_t>(v.x);
-//	g = static_cast<uint8_t>(v.y);
-//	b = static_cast<uint8_t>(v.z);
-//}
-//Color::Color(const Vector3Int& v) { // 0...255
-//
-//}
-//Color::Color(const Vector4& v) { // 0...1
-//	r = static_cast<uint8_t>(v.x);
-//	g = static_cast<uint8_t>(v.y);
-//	b = static_cast<uint8_t>(v.z);
-//	a = static_cast<uint8_t>(v.w);
-//}
-//Color::Color(const Vector4Int& v) { // 0...255
-//
-//}
 Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
 	r = red;
 	g = green;
@@ -25,10 +8,24 @@ Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
 	a = alpha;
 }
 
-void Color::Shift()
-{
-	uint8_t _r = r;
-	r = g; g = b; b = _r;
+Color Color::operator* (Color const& col) {
+	int R = col.r - r;
+	int G = col.g - g;
+	int B = col.b - b;
+	float k = (float)col.a / (col.a + a);
+	R *= k;
+	G *= k;
+	B *= k;
+	return Color(
+		uint8_t(r + R),
+		uint8_t(g + G),
+		uint8_t(b + B),
+		std::max(a, col.a)
+	);
+}
+
+Color::operator sf::Color() const {
+	return sf::Color(r, g, b, a);
 }
 
 Color Color::Black{ 0,0,0 };

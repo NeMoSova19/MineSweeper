@@ -5,12 +5,10 @@ void Scene::CreateCanvas(std::string name) {
 	layers.push_back(name);
 }
 
-void Scene::CanvasSettings(std::string name, bool visible, bool updatable, bool always_visible) {
-	UIregion::NeedDraw = true;
+void Scene::CanvasSettings(std::string name, bool visible, bool updatable) {
 	auto& scene = scenes[name];
 	scene.isVisible = visible;
 	scene.isUpdatable = updatable;
-	scene.AlwaysVisible = always_visible;
 }
 
 void Scene::Update()
@@ -37,13 +35,13 @@ void Scene::Update()
 		}
 }
 
-void Scene::Draw(sf::RenderWindow& rw) {
+void Scene::Draw() {
 
 		for (auto& layer : layers) {
 			auto& scene = scenes[layer];
 			if (scene.isVisible) {
 				for (auto region : scene.regions) {
-					region->Draw(rw);
+					region->Draw();
 				}
 			}
 		}

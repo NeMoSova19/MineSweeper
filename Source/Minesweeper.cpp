@@ -3,6 +3,7 @@
 #include <functional>
 #include "Windower.hpp"
 #include "Canvas.hpp"
+#include "Time.hpp"
 
 Tile::Tile(Vector2 pos, Vector2 size, size_t i, size_t j)
 	:_i(i), _j(j)
@@ -28,7 +29,6 @@ void Tile::OnMousePress(SuperMouse::Key key) {
 		}
 
 		if (stat == -1) { // бомба
-			Boom_queue.push({ _i,_j });
 			map[_i][_j]->stat = 99;
 			FgameOver();
 			return;
@@ -131,7 +131,6 @@ void Tile::_plus(size_t i, size_t j) { //
 void Tile::TryOpen(size_t i, size_t j) { //
 	if (isExist(i, j) && !map[i][j]->isOpen && !map[i][j]->isFlag)
 		if (map[i][j]->stat == -1) {
-			Boom_queue.push({ i,j });
 			FgameOver();
 		}
 		else OpenZero(i, j);
@@ -422,12 +421,9 @@ void Game::Start() {
 			Scene::AddOnCanvas("Game", Tile::map[i][j]);
 		}
 	}
-	while (!Tile::Boom_queue.empty()) {
-		Tile::Boom_queue.pop();
-	}
 }
 
-void Game::Update(float deltaTime) {
+void Game::Update() {
 	if (isStart) {
 		if (!isPause) {
 			if (Tile::total_opened_tiles + Tile::total_placed_flags == Tile::map.size() * Tile::map[0].size()) {
@@ -440,7 +436,7 @@ void Game::Update(float deltaTime) {
 				
 				return;
 			}
-			m_time += deltaTime;
+			m_time += Time::GetElapsedTime();
 		}
 
 		size_t tt = Tile::total_bombs - Tile::total_placed_flags;

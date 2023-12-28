@@ -1,6 +1,7 @@
 #include "UIregion.hpp"
 #include "SuperMouse.hpp"
 #include "ResourceManager.hpp"
+#include "Windower.hpp"
 
 // class Point ///////////////////////////////////////////////
 Point::Point(float x, float y)
@@ -159,11 +160,6 @@ Rect::Rect(float x, float y, float w, float h)
 	Rect_size.x = w;
 	Rect_size.y = h;
 }
-Rect& Rect::SetRectType(RectType rt)
-{
-	m_RectType = rt;
-	return *this;
-}
 Rect& Rect::SetCenter(Vector2 const& center) {
 	SetGlobalPosition(center - Rect_size / 2);
 	return *this;
@@ -177,11 +173,7 @@ Rect& Rect::SetSizeAcrossCenter(Vector2 const& size) {
 	Rect_size = size;
 	return *this;
 }
-Rect& Rect::SetRadius(float r)
-{
-	SetSizeAcrossCenter({ r*2,r*2 });
-	return *this;
-}
+
 Rect& Rect::SetWidth(float width)
 {
 	Rect_size.x = width;
@@ -190,45 +182,6 @@ Rect& Rect::SetWidth(float width)
 Rect& Rect::SetHeight(float height)
 {
 	Rect_size.y = height;
-	return *this;
-}
-Rect& Rect::SetLeftUp(Vector2 const& pos) {
-	Rect_size = GetGlobalPosition() + Rect_size - pos;
-	SetGlobalPosition(pos);
-	return *this;
-}
-Rect& Rect::SetRightUp(Vector2 const& pos)
-{
-	Rect_size.y += GetGlobalPosition().y - pos.y;
-	SetGlobalY(pos.y);
-	Rect_size.x = pos.x - GetGlobalPosition().x;
-	return *this;
-}
-Rect& Rect::SetRightDown(Vector2 const& pos) {
-	Rect_size = pos - GetGlobalPosition();
-	return *this;
-}
-Rect& Rect::SetLeftDown(Vector2 const& pos)
-{
-	Rect_size.x += GetGlobalPosition().x - pos.x;
-	SetGlobalX(pos.x);
-	Rect_size.y = pos.y - GetGlobalPosition().y;
-	return *this;
-}
-Rect& Rect::SetLeftBorder(float pos) {
-	SetGlobalX(pos);
-	return *this;
-}
-Rect& Rect::SetRightBorder(float pos) {
-	SetGlobalX(pos - GetWidth());
-	return *this;
-}
-Rect& Rect::SetUpBorder(float pos) {
-	SetGlobalY(pos);
-	return *this;
-}
-Rect& Rect::SetDownBorder(float pos) {
-	SetGlobalY(pos - GetHeigth());
 	return *this;
 }
 Vector2 Rect::GetCenter() const {
@@ -252,33 +205,13 @@ float Rect::GetDown() const {
 float Rect::GetWidth() const {
 	return Rect_size.x;
 }
-float Rect::GetHeigth() const {
+float Rect::GetHeight() const {
 	return Rect_size.y;
-}
-float Rect::GetRadius() const
-{
-	return GetWidth()/2;
-}
-bool Rect::AABBContains(Vector2 const& lu, Vector2 const& size, Vector2 const& p) {
-	Vector2 v = p - lu;
-	return v <= size && v >= Vector2();
-}
-bool Rect::AABBContains(Vector2 const& p) {
-	Vector2 v = p - GetGlobalPosition();
-	return v <= Rect_size && v >= Vector2(0, 0);
 }
 bool Rect::Contains(Vector2 const& p)
 {
-	switch (m_RectType)
-	{
-	case RectType::Rect: {
-		Vector2 v = p - GetGlobalPosition();
-		return v <= GetSize() && v >= Vector2(0, 0);
-	}
-	case RectType::Circle:
-		return (p - GetCenter()).length_squared() <= std::powf(std::min(GetSize().x, GetSize().y), 2) / 4;
-	}
-	return false;
+	Vector2 v = p - GetGlobalPosition();
+	return v <= GetSize() && v >= Vector2(0, 0);
 }
 // Rect
 
@@ -339,84 +272,43 @@ sf::Texture& Drawable::GetBGTexture() const
 {
 	return ResourceManager::GetTexture(m_BGtexturePath);
 }
-#define M_PI_2     1.57079632679489661923
-#define M_PI       3.14159265358979323846
-void Drawable::Draw(sf::RenderWindow& rw)
+
+void Drawable::Draw()
 {
-	switch (m_RectType)
-	{
-	case RectType::Rect:
-		rw.draw(var, rs);
-	break;
-	case RectType::Circle:
-		rw.draw(vac, rs);
-		break;
-	}
+	Windower::Win.rw.draw(var, rs);
 }
 void Drawable::DrawUpdate()
 {
-	NeedDraw = true;
-
 	rs = sf::RenderStates::Default;
-	switch (m_RectType)
-	{
-	case RectType::Rect:
-	{
-		var[0].position = GetGlobalPosition();
-		var[1].position = GetGlobalPosition() + Vector2(GetWidth(), 0);
-		var[2].position = GetGlobalPosition() + GetSize();
-		var[3].position = GetGlobalPosition() + Vector2(0, GetHeigth());
 
-		var[0].color = var[1].color = var[2].color = var[3].color = GetBGColor();
+	var[0].position = GetGlobalPosition();
+	var[1].position = GetGlobalPosition() + Vector2(GetWidth(), 0);
+	var[2].position = GetGlobalPosition() + GetSize();
+	var[3].position = GetGlobalPosition() + Vector2(0, GetHeight());
 
-		if (!GetBGTexturePath().empty()) {
-			Rect r;
-			if (m_SpriteDrawType == SpriteDrawType::SpriteAnim) {
-				r.SetGlobalPosition({m_SpriteSize.x*m_SpriteNum,0});
-				r.SetSizeAcrossPos(m_SpriteSize);
+	var[0].color = var[1].color = var[2].color = var[3].color = GetBGColor();
+
+	if (!GetBGTexturePath().empty()) {
+		Rect r;
+		if (m_SpriteDrawType == SpriteDrawType::SpriteAnim) {
+			r.SetGlobalPosition({ m_SpriteSize.x * m_SpriteNum,0 });
+			r.SetSizeAcrossPos(m_SpriteSize);
+		}
+		else {
+			if (m_TextureRect.GetSize().is_zero()) {
+				auto s = GetBGTexture().getSize();
+				m_TextureRect.SetSizeAcrossPos({ (float)s.x,(float)s.y });
+				m_TextureRect.SetGlobalPosition({ 0,0 });
 			}
-			else {
-				if (m_TextureRect.GetSize().is_zero()) {
-					auto s = GetBGTexture().getSize();
-					m_TextureRect.SetSizeAcrossPos({ (float)s.x,(float)s.y });
-					m_TextureRect.SetGlobalPosition({ 0,0 });
-				}
-				r.SetGlobalPosition(m_TextureRect.GetGlobalPosition());
-				r.SetSizeAcrossPos(m_TextureRect.GetSize());
-			}
-
-			var[0].texCoords = { r.GetLeft(), r.GetUp()};
-			var[1].texCoords = { r.GetRight(), r.GetUp() };
-			var[2].texCoords = { r.GetRight(), r.GetDown() };
-			var[3].texCoords = { r.GetLeft(), r.GetDown() };
-			rs.texture = &GetBGTexture();
-		}
-	}
-	break;
-	case RectType::Circle:
-	{
-		double ang{ 2 * M_PI / 32 };
-		float r = GetWidth() / 2;
-		float texture_rad{ 0 };
-		Vector2 texture_center;
-		std::vector<Vector2> dirs(32);
-
-		if (!GetBGTexturePath().empty()) {
-			texture_center = { GetBGTexture().getSize().x / 2.f, GetBGTexture().getSize().y / 2.f };
-			texture_rad = std::min(texture_center.x, texture_center.y);
-			rs.texture = &GetBGTexture();
+			r.SetGlobalPosition(m_TextureRect.GetGlobalPosition());
+			r.SetSizeAcrossPos(m_TextureRect.GetSize());
 		}
 
-		for (size_t i = 0; i < 32; i++)
-		{
-			Vector2 r_vec = Vector2(cos(i * ang), sin(i * ang));
-			dirs[i] = r_vec;
-			vac[i].position = GetCenter() + r_vec * r;
-			vac[i].color = GetBGColor();
-			vac[i].texCoords = texture_center + r_vec * texture_rad;
-		}
-	}
-	break;
+		var[0].texCoords = { r.GetLeft(), r.GetUp() };
+		var[1].texCoords = { r.GetRight(), r.GetUp() };
+		var[2].texCoords = { r.GetRight(), r.GetDown() };
+		var[3].texCoords = { r.GetLeft(), r.GetDown() };
+		rs.texture = &GetBGTexture();
 	}
 }
 // Drawable
@@ -439,22 +331,13 @@ UIregion::UIregion()
 {
 	Name = "UIregion" + std::to_string(m_lastNameNumber++);
 	m_UIregions[Name] = this;
-	for (int8_t i = 0; i < SuperMouse::NumKeys; i++)
+	for (int8_t i = 0; i < SuperMouse::Key::Count; i++)
 	{
 		isGrab[i] = false;
 	}
 }
 UIregion::~UIregion() {
 	m_UIregions.erase(Name);
-}
-UIregion& UIregion::SetActive(bool active)
-{
-	m_isActive = active;
-	return *this;
-}
-bool UIregion::GetActive() const
-{
-	return m_isActive;
 }
 UIregion& UIregion::Clicable(bool b) {
 	m_isClicable = b;
@@ -497,10 +380,10 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 
 	if (m_isClicable) {
 		inRectPrev = inRectNow;
-		inRectNow = Contains(SuperMouse::map_pose);
+		inRectNow = Contains(SuperMouse::map_pos);
 
 		if (!inRectNow) {
-			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
+			for (int8_t i = 0; i < SuperMouse::Key::Count; i++) {
 				if (SuperMouse::mButtonState[i] == SuperMouse::Press) {
 					OnMousePressOut((SuperMouse::Key)i);
 				}
@@ -508,7 +391,7 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 		}
 
 		if (!inRectPrev && !inRectNow) { // не в rect 
-			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
+			for (int8_t i = 0; i < SuperMouse::Key::Count; i++) {
 				if (SuperMouse::mButtonState[i] == SuperMouse::Hold) {
 					if (isGrab[i]) {
 						OnMouseGrab((SuperMouse::Key)i);
@@ -536,7 +419,7 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 
 		if (inRectNow && !inRectPrev) { // зашел в rect
 			bool preAvailable{ false };
-			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
+			for (int8_t i = 0; i < SuperMouse::Key::Count; i++) {
 				preAvailable |= SuperMouse::mButtonState[i] != SuperMouse::Not_press;
 			}
 			isAvailable = !preAvailable;
@@ -549,14 +432,14 @@ bool UIregion::ClickUpdate(bool dont_handle_clicks)
 
 		if (inRectNow && inRectPrev) { // в rect
 			bool preAvailable{ false };
-			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
+			for (int8_t i = 0; i < SuperMouse::Key::Count; i++) {
 				preAvailable |= SuperMouse::mButtonState[i] != SuperMouse::Not_press;
 			}
 			if(!preAvailable) isAvailable = true;
 		}
 
 		if (inRectNow && inRectPrev && !dont_handle_clicks && isAvailable) { // в rect 
-			for (int8_t i = 0; i < SuperMouse::NumKeys; i++) {
+			for (int8_t i = 0; i < SuperMouse::Key::Count; i++) {
 				switch (SuperMouse::mButtonState[i])
 				{
 				case SuperMouse::Press:
@@ -610,7 +493,7 @@ void UIregion::Update()
 	M_size = GetSize();
 }
 
-void RecursiveOnEditable(UIregion* reg) {
+void UIregion::RecursiveOnEditable(UIregion* reg) {
 	reg->OnEditable();
 	for (auto& f : reg->FOnEditable) {
 		f();

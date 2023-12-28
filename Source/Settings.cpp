@@ -28,7 +28,7 @@ void Settings::ReadSettings()
 		stat_30x16 = { _30x16["win"],_30x16["lose"],_30x16["time"] };
 		SetTheme(js["Theme"]);
 	}
-	catch (std::exception const& e) {
+	catch (std::exception const&) {
 		SetTheme(Theme);
 	}
 }
@@ -218,4 +218,5 @@ Stat Settings::GetStat(Game::Type type)
 	case Game::x30x16:
 		return stat_30x16;
 	}
+	return Stat();
 }
